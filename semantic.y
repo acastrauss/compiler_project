@@ -26,23 +26,29 @@
 }
 
 %token <i> _TYPE
+
 %token _IF
 %token _ELSE
 %token _RETURN
+
 %token <s> _ID
 %token <s> _INT_NUMBER
 %token <s> _UINT_NUMBER
+
 %token _LPAREN
 %token _RPAREN
 %token _LBRACKET
 %token _RBRACKET
+
 %token _ASSIGN
 %token _SEMICOLON
 %token _COMMA
+
 %token <i> _AROP
 %token <i> _RELOP
+%token <i> _INCOP
 
-%type <i> num_exp exp literal function_call argument rel_exp
+%type <i> num_exp inc_exp exp literal function_call argument rel_exp
 
 %nonassoc ONLY_IF
 %nonassoc _ELSE
@@ -84,6 +90,9 @@ parameter
 
   | _TYPE _ID
       {
+        if ($1 == VOID)
+          err("parameter %s can not be void.", $2);
+
         insert_symbol($2, PAR, $1, 1, NO_ATR);
         set_atr1(fun_idx, 1);
         set_atr2(fun_idx, $1);
@@ -91,7 +100,12 @@ parameter
   ;
 
 body
-  : _LBRACKET variable_list statement_list _RBRACKET
+  : _LBRACKET variable_list statement_list return_statement _RBRACKET
+  | _LBRACKET variable_list statement_list _RBRACKET
+    {
+        if (get_type(fun_idx) != VOID)
+          warning("function should return non void value.");
+    }
   ;
 
 variable_list
@@ -102,8 +116,11 @@ variable_list
 variable
   : _TYPE 
     {
+      if ($1 == VOID)
+        err("variable can not be void.");
+
       id_type = $1;
-      printf("%d\n", $1);
+      //printf("%d\n", $1);
     }
   id_list _SEMICOLON
   ;
@@ -134,7 +151,6 @@ statement
   : compound_statement
   | assignment_statement
   | if_statement
-  | return_statement
   ;
 
 compound_statement
@@ -173,8 +189,26 @@ num_exp
       }
   ;
 
+inc_exp
+  : _ID _INCOP 
+    {
+      $$ = lookup_symbol($1, VAR|PAR);
+      if($$ == NO_INDEX)
+        err("no variable named :'%s'", $1);
+      
+    }
+  | _INCOP _ID 
+    {
+      $$ = lookup_symbol($2, VAR|PAR);
+      if($$ == NO_INDEX)
+        err("no variable named :'%s'", $2);
+      
+    }
+  ;
+
 exp
   : literal
+  | inc_exp
   | _ID
       {
         $$ = lookup_symbol($1, VAR|PAR);
@@ -247,6 +281,11 @@ return_statement
         if(get_type(fun_idx) != get_type($2))
           err("incompatible types in return");
       }
+  | _RETURN _SEMICOLON
+    {
+        if (get_type(fun_idx) != VOID)
+          warning("function should return non void value.");
+    }
   ;
 
 %%
