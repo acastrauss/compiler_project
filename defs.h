@@ -11,7 +11,12 @@
 #define LAST_WORKING_REG      12
 #define FUN_REG               13
 #define CHAR_BUFFER_LENGTH   128
+
+#define MAX_PARAMS            63  // maximum number of params
+
 extern char char_buffer[CHAR_BUFFER_LENGTH];
+
+unsigned temp_no_fun[1]; // ukoliko nema fje 
 
 //pomocni makroi za ispis
 extern void warning(char *s);

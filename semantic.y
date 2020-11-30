@@ -4,6 +4,7 @@
   #include "defs.h"
   #include "symtab.h"
 
+  
   int yyparse(void);
   int yylex(void);
   int yyerror(char *s);
@@ -17,7 +18,10 @@
   int fun_idx = -1;
   int fcall_idx = -1;
 
-  int id_type = 0; 
+  int id_type = 0;
+  int num_of_params = 0; 
+  unsigned params[MAX_PARAMS];
+  int curr_arg = 0;
 %}
 
 %union {
@@ -48,7 +52,7 @@
 %token <i> _RELOP
 %token <i> _INCOP
 
-%type <i> num_exp inc_exp exp literal function_call argument rel_exp
+%type <i> num_exp inc_exp exp literal function_call argument argument_list real_arg_list rel_exp
 
 %nonassoc ONLY_IF
 %nonassoc _ELSE
@@ -76,26 +80,40 @@ function
           fun_idx = insert_symbol($2, FUN, $1, NO_ATR, NO_ATR);
         else 
           err("redefinition of function '%s'", $2);
+    
       }
-    _LPAREN parameter _RPAREN body
+    _LPAREN real_param_list
+      {
+        set_atr1(fun_idx, num_of_params);
+        set_atr2(fun_idx, params);
+      
+      }
+    _RPAREN body
       {
         clear_symbols(fun_idx + 1);
         var_num = 0;
+        num_of_params = 0;
       }
   ;
 
-parameter
-  : /* empty */
-      { set_atr1(fun_idx, 0); }
+real_param_list
+  : empty_argument
+  | parameter_list
+  ;
 
-  | _TYPE _ID
+parameter_list
+  : parameter
+  | parameter_list parameter
+  ;
+
+parameter
+  : _TYPE _ID
       {
         if ($1 == VOID)
           err("parameter %s can not be void.", $2);
 
-        insert_symbol($2, PAR, $1, 1, NO_ATR);
-        set_atr1(fun_idx, 1);
-        set_atr2(fun_idx, $1);
+        insert_symbol($2, PAR, $1, ++num_of_params, NO_ATR);
+        params[num_of_params - 1] = $1;
       }
   ;
 
@@ -235,26 +253,45 @@ function_call
         if(fcall_idx == NO_INDEX)
           err("'%s' is not a function", $1);
       }
-    _LPAREN argument _RPAREN
+    _LPAREN real_arg_list _RPAREN
       {
         if(get_atr1(fcall_idx) != $4)
           err("wrong number of args to function '%s'", 
               get_name(fcall_idx));
         set_type(FUN_REG, get_type(fcall_idx));
         $$ = FUN_REG;
+
+        curr_arg = 0;
       }
   ;
 
-argument
-  : /* empty */
-    { $$ = 0; }
+empty_argument
+  : 
+  ;
 
-  | num_exp
+real_arg_list
+  : empty_argument
+    { $$ = curr_arg; }
+  | argument_list
+    { $$ = curr_arg; }
+  ;
+
+argument_list
+  : argument
+    { $$ = curr_arg; }
+  
+  | argument_list _COMMA argument
+    
+    { $$ = curr_arg; }
+  ;
+
+argument
+  : num_exp
     { 
-      if(get_atr2(fcall_idx) != get_type($1))
+      if(get_atr2(fcall_idx)[curr_arg++] != get_type($1))
         err("incompatible type for argument in '%s'",
             get_name(fcall_idx));
-      $$ = 1;
+      
     }
   ;
 
@@ -302,6 +339,7 @@ void warning(char *s) {
 }
 
 int main() {
+  
   int synerr;
   init_symtab();
 
