@@ -18,6 +18,8 @@
   int fcall_idx = -1;
 
   int id_type = 0; 
+  int num_of_param = 0;
+  int curr_arg = 0;
 %}
 
 %union {
@@ -48,7 +50,7 @@
 %token <i> _RELOP
 %token <i> _INCOP
 
-%type <i> num_exp inc_exp exp literal function_call argument rel_exp
+%type <i> num_exp inc_exp exp literal function_call argument argument_list real_arg_list rel_exp 
 
 %nonassoc ONLY_IF
 %nonassoc _ELSE
@@ -60,6 +62,7 @@ program
       {  
         if(lookup_symbol("main", FUN) == NO_INDEX)
           err("undefined reference to 'main'");
+        
        }
   ;
 
@@ -77,25 +80,57 @@ function
         else 
           err("redefinition of function '%s'", $2);
       }
-    _LPAREN parameter _RPAREN body
+    _LPAREN real_param_list
       {
-        clear_symbols(fun_idx + 1);
+          set_atr1(fun_idx, num_of_param);
+      }
+    _RPAREN body
+      {
+        //print_symtab();
+          //printf("\nnum_of_p: %d\nfun_indx:%d\n", num_of_param, fun_idx);
+          //print_symtab();
+          //printf("\nqweqweqwe\n");
+          
+          clear_symbols(fun_idx + num_of_param + 1); // ne brise parametre, vec ce u sledecoj petlji da im izbrise nazive
+        
+        if(num_of_param) 
+        { 
+          for (int i = 1; i < num_of_param + 1; i++) 
+          {
+            // fun_idx + 1 je zbog toga sto je fun_idx index fje a sledeci index je indeks prvog parametra
+            clear_name(fun_idx + i);
+          }
+        }
+
+        //print_symtab();
+
         var_num = 0;
+        num_of_param = 0;
       }
   ;
 
-parameter
-  : /* empty */
-      { set_atr1(fun_idx, 0); }
+real_param_list
+  : /* no params */
+  | parameter_list
+  ;
 
-  | _TYPE _ID
+parameter_list
+  : parameter
+  | parameter_list _COMMA parameter
+  ;
+
+parameter
+  : _TYPE _ID
       {
         if ($1 == VOID)
           err("parameter %s can not be void.", $2);
 
-        insert_symbol($2, PAR, $1, 1, NO_ATR);
-        set_atr1(fun_idx, 1);
-        set_atr2(fun_idx, $1);
+        if(lookup_symbol($2, VAR|PAR) == NO_INDEX)
+          insert_symbol($2, PAR, $1, ++num_of_param, NO_ATR);
+        else 
+           err("redefinition of '%s'", $2);
+      
+
       }
   ;
 
@@ -235,26 +270,43 @@ function_call
         if(fcall_idx == NO_INDEX)
           err("'%s' is not a function", $1);
       }
-    _LPAREN argument _RPAREN
+    _LPAREN real_arg_list _RPAREN
       {
         if(get_atr1(fcall_idx) != $4)
           err("wrong number of args to function '%s'", 
               get_name(fcall_idx));
         set_type(FUN_REG, get_type(fcall_idx));
         $$ = FUN_REG;
+
+        curr_arg = 0;
       }
   ;
 
-argument
-  : /* empty */
-    { $$ = 0; }
+real_arg_list
+  : /*no args*/
+    {$$ = 0; }
+  | argument_list
+    {$$ = curr_arg; }
+  ;
 
-  | num_exp
+argument_list
+  : argument
+  | argument_list _COMMA argument
+  ;
+
+argument
+  : num_exp
     { 
-      if(get_atr2(fcall_idx) != get_type($1))
+      curr_arg++;
+      
+      //printf("\ntype param: %d, type arg: %d\n", get_type(fcall_idx + curr_arg), get_type($1));
+      //printf("\n param kind: %d\n", get_kind(fcall_idx + curr_arg));
+      //print_symtab();
+
+      if(get_type(fcall_idx + curr_arg) != get_type($1))
         err("incompatible type for argument in '%s'",
             get_name(fcall_idx));
-      $$ = 1;
+      $$ = curr_arg;
     }
   ;
 

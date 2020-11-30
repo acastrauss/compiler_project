@@ -125,6 +125,19 @@ unsigned get_atr2(int index) {
   return NO_ATR;
 }
 
+void clear_name(int index)
+{  
+  /*
+  if(symbol_table[index].name) 
+  {
+    printf("%s", symbol_table[index].name);
+    free(symbol_table[index].name);
+  }
+  */
+  memset(symbol_table[index].name, 0, strlen(symbol_table[index].name));
+}
+
+
 // Brise elemente tabele od zadatog indeksa do kraja tabele
 void clear_symbols(unsigned begin_index) {
   int i;
@@ -134,9 +147,13 @@ void clear_symbols(unsigned begin_index) {
     err("Compiler error! Wrong clear symbols argument");
     exit(EXIT_FAILURE);
   }
+
   for(i = begin_index; i < first_empty; i++) {
-    if(symbol_table[i].name)
+    if(symbol_table[i].name) 
+    {
+      //printf("\nname: %s\n", symbol_table[i].name);
       free(symbol_table[i].name);
+    }
     symbol_table[i].name = 0;
     symbol_table[i].kind = NO_KIND;
     symbol_table[i].type = NO_TYPE;

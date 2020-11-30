@@ -9,7 +9,7 @@ unsigned f2() {
     return 2u;
 }
 
-unsigned ff(unsigned x) {
+unsigned ff(unsigned x, int fgh) {
     unsigned y;
     return x + f2() - y;
 }
@@ -41,7 +41,7 @@ int main() {
         a = 2;
 
     if (u == w) {   //3
-        u = ff(1u);
+        u = ff(1u, 2);
         a = f(11);
     }
     else {

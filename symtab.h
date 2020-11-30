@@ -41,6 +41,7 @@ unsigned get_atr1(int index);
 void     set_atr2(int index, unsigned atr2);
 unsigned get_atr2(int index);
 
+void     clear_name(int index);
 // Brise elemente tabele od zadatog indeksa
 void clear_symbols(unsigned begin_index);
 
