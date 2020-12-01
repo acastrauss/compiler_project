@@ -145,8 +145,6 @@ parameter
           insert_symbol($2, PAR, $1, ++num_of_param, NO_ATR);
         else 
            err("redefinition of '%s'", $2);
-      
-
       }
   ;
 
@@ -368,8 +366,7 @@ inc_exp
     {
       $$ = lookup_symbol($1, VAR|PAR);
       if($$ == NO_INDEX)
-        err("no variable named :'%s'", $1);
-      
+        err("no variable named :'%s'", $1); 
     }
   | _INCOP _ID 
     {
@@ -472,7 +469,11 @@ return_statement
         if(get_type(fun_idx) != get_type($2))
           err("incompatible types in return");
       }
-      
+  | _RETURN bool_exp _SEMICOLON
+    {
+      if(get_type(fun_idx) != get_type($2))
+        err("incompatible types in return");
+    }
   | _RETURN _SEMICOLON
     {
         if (get_type(fun_idx) != VOID)

@@ -126,14 +126,7 @@ unsigned get_atr2(int index) {
 }
 
 void clear_name(int index)
-{  
-  /*
-  if(symbol_table[index].name) 
-  {
-    printf("%s", symbol_table[index].name);
-    free(symbol_table[index].name);
-  }
-  */
+{ 
   memset(symbol_table[index].name, 0, strlen(symbol_table[index].name));
 }
 
