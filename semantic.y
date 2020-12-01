@@ -61,7 +61,7 @@
 
 %type <i> num_exp inc_exp exp literal function_call argument argument_list real_arg_list rel_exp 
 %type <i> bool_exp basic_bool
-%type <i> paso_part para_statement
+%type <i> paso_part 
 
 %nonassoc ONLY_IF
 %nonassoc _ELSE
@@ -205,7 +205,7 @@ para_statement
       
       indx_para = idx;
     }
-  _EN _LPAREN literal _DDOT literal paso_part _RPAREN statement 
+  _EN _LPAREN literal _DDOT literal paso_part 
   {
     int idx_type = get_type(indx_para);
     
@@ -247,14 +247,12 @@ para_statement
     }
     // da li su vrednosti korektne, jer bi trebalo da 
     // lit1 < lit2 i lit3 > 0
-    // ili
-    // lit1 > lit2 i lit3 < 0
-
     if (
       ! (lit1 < lit2 && lit3 > 0 ) 
     )
     err("invalid values for iterator constants.\n");
   }
+  _RPAREN statement
   ;
 
 paso_part
@@ -282,14 +280,19 @@ assignment_statement
         if(idx == NO_INDEX)
           err("invalid lvalue '%s' in assignment", $1);
         else
-          if(get_type(idx) != get_type($3))
-            {
+        {
+          char num_exp_name[32]; // jer ce biti broj svakako 
+          sprintf(num_exp_name, "%d", $3);
+
+          if(get_type(idx) != get_type(lookup_symbol(num_exp_name, VAR|PAR|LIT)))
+          {
                 err("incompatible types in assignment");
       
-                //printf("1:%d\n", get_type(idx));
-                //printf("3:%d\n", get_type($3));
+                printf("\ntype 1:%d\n", get_type(idx));
+                printf("\ntype 3:%d\n3:%d", get_type(lookup_symbol(num_exp_name, VAR|PAR|LIT)), $3);
           
-            }
+          } 
+        }
       }
   |
    _ID _ASSIGN bool_exp _SEMICOLON
@@ -312,6 +315,7 @@ assignment_statement
 
 num_exp
   : exp
+    { $$ = $1 ;}
   | num_exp _AROP exp
       {
         if(get_type($1) != get_type($3))
@@ -320,7 +324,6 @@ num_exp
             //printf("1:%d\n", $1);
             //printf("3:%d\n", $3);
           }
-          
       }
   ;
 
@@ -358,6 +361,7 @@ inc_exp
 
 exp
   : literal
+    { $$ = $1; }
   | inc_exp
   | _ID
       {

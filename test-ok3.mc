@@ -4,7 +4,5 @@ int main() {
     int c,d,e,f;
     unsigned g;
     para g en (1u .. 5u paso 2u)
-    {
-        
-    }
+     a = 5;
 }
