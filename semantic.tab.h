@@ -57,22 +57,30 @@ extern int yydebug;
     _EN = 263,
     _DDOT = 264,
     _PASO = 265,
-    _ID = 266,
-    _INT_NUMBER = 267,
-    _UINT_NUMBER = 268,
-    _BOOL_VALUE = 269,
-    _LPAREN = 270,
-    _RPAREN = 271,
-    _LBRACKET = 272,
-    _RBRACKET = 273,
-    _ASSIGN = 274,
-    _SEMICOLON = 275,
-    _COMMA = 276,
-    _AROP = 277,
-    _RELOP = 278,
-    _INCOP = 279,
-    _BOOLOP = 280,
-    ONLY_IF = 281
+    _BRANCH = 266,
+    _FIRST = 267,
+    _SECOND = 268,
+    _THIRD = 269,
+    _OTHERWISE = 270,
+    _ID = 271,
+    _INT_NUMBER = 272,
+    _UINT_NUMBER = 273,
+    _BOOL_VALUE = 274,
+    _LPAREN = 275,
+    _RPAREN = 276,
+    _LBRACKET = 277,
+    _RBRACKET = 278,
+    _LSQRBRACKET = 279,
+    _RSQRBRACKET = 280,
+    _ASSIGN = 281,
+    _SEMICOLON = 282,
+    _COMMA = 283,
+    _RARROW = 284,
+    _AROP = 285,
+    _RELOP = 286,
+    _INCOP = 287,
+    _BOOLOP = 288,
+    ONLY_IF = 289
   };
 #endif
 
@@ -80,12 +88,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 27 "semantic.y"
+#line 28 "semantic.y"
 
   int i;
   char *s;
 
-#line 89 "semantic.tab.h"
+#line 97 "semantic.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

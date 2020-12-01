@@ -24,6 +24,12 @@
 ".."                 { return _DDOT; }
 "paso"               { return _PASO; }
 
+"branch"             { return _BRANCH; }
+"first"              { return _FIRST; }
+"second"             { return _SECOND; }
+"third"              { return _THIRD; }
+"otherwise"          { return _OTHERWISE; }
+
 "true"|"false"       { yylval.s = strdup(yytext);
                           return _BOOL_VALUE; }
 
@@ -31,9 +37,12 @@
 ")"                  { return _RPAREN; }
 "{"                  { return _LBRACKET; }
 "}"                  { return _RBRACKET; }
+"["                  { return _LSQRBRACKET; }
+"]"                  { return _RSQRBRACKET; }
 ";"                  { return _SEMICOLON; }
 "="                  { return _ASSIGN; }
 ","                  { return _COMMA; }
+"->"                 { return _RARROW; }
 
 "+"                  { yylval.i = ADD; return _AROP; }
 "-"                  { yylval.i = SUB; return _AROP; }

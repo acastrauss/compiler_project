@@ -22,6 +22,7 @@
   int curr_arg = 0;
 
   int indx_para = 0;
+  int indx_branch = 0;
 %}
 
 %union {
@@ -40,6 +41,12 @@
 %token _DDOT
 %token _PASO
 
+%token _BRANCH
+%token _FIRST
+%token _SECOND
+%token _THIRD
+%token _OTHERWISE
+
 %token <s> _ID
 %token <s> _INT_NUMBER
 %token <s> _UINT_NUMBER
@@ -49,10 +56,13 @@
 %token _RPAREN
 %token _LBRACKET
 %token _RBRACKET
+%token _LSQRBRACKET
+%token _RSQRBRACKET
 
 %token _ASSIGN
 %token _SEMICOLON
 %token _COMMA
+%token _RARROW
 
 %token <i> _AROP
 %token <i> _RELOP
@@ -194,45 +204,63 @@ statement
   | if_statement
   | exp_statement
   | para_statement
+  | branch_statement
   ;
+
+branch_statement
+  : _BRANCH _LSQRBRACKET _ID
+      {
+        if((indx_branch = lookup_symbol($3, VAR|PAR)) == NO_INDEX)
+          err("undefined '%s' in branch statement\n", $3);
+      }
+    _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET
+    {
+      int id_type = get_type(indx_branch);
+
+      if (
+        id_type != get_type($6) ||
+        id_type != get_type($8) ||
+        id_type != get_type($10)  
+      )
+        err("incompatible types in branch statement.\n");
+    }
+    _FIRST statement
+    _SECOND statement
+    _THIRD statement
+    _OTHERWISE statement
+  ;
+
 
 para_statement
   : _PARA _ID 
     {
       int idx = lookup_symbol($2, VAR|PAR);
       if(idx == NO_INDEX)
-        err("invalid lvalue '%s' in para statement", $1);
+        err("undefined '%s' in para statement", $2);
       
       indx_para = idx;
     }
   _EN _LPAREN literal _DDOT literal paso_part 
   {
     int idx_type = get_type(indx_para);
+    int lit1_type = get_type($6);
+    int lit2_type = get_type($8);
+
+    int lit1 = atoi(get_name($6));
+    int lit2 = atoi(get_name($8));
     
-    // imena, tj. bas vrednoti ali kao string jer treba za tabelu tako
-    char lit1_name[32];
-    char lit2_name[32];
-    char lit3_name[32];
-
-    sprintf(lit1_name, "%d", $6);
-    sprintf(lit2_name, "%d", $8);
-    sprintf(lit3_name, "%d", $9);
-
-    int lit1_type = get_type(lookup_symbol(lit1_name, LIT));
-    int lit2_type = get_type(lookup_symbol(lit2_name, LIT));
-    
-    int lit1 = $6;
-    int lit2 = $8;
-    int lit3 = $9;
-
+    int lit3;
     int lit3_type;
-    if ($9 == 1) 
+    
+    if ($9 == -1) 
     {
-      lit3_type = idx_type; // ako nije naveden paso tip, racunace kao da je istog tipa kao idx
+      lit3_type = idx_type; // ako nije naveden paso izraz, racunace kao da je istog tipa kao idx
+      lit3 = 1; // pozitivan broj da bi prosao uslov kasnije  
     }
     else 
     {
-      lit3_type = get_type(lookup_symbol(lit3_name, LIT));
+      lit3_type = get_type($9);
+      lit3 = atoi(get_name($9)); 
     }
 
     // tipovi iteratora i parametara
@@ -243,8 +271,8 @@ para_statement
     )
     {
       err("incompatible types for para statement.\n");
-
     }
+
     // da li su vrednosti korektne, jer bi trebalo da 
     // lit1 < lit2 i lit3 > 0
     if (
@@ -256,7 +284,7 @@ para_statement
   ;
 
 paso_part
-  : { $$ = 1; // pomeraj je 1
+  : { $$ = -1; // ako nije naveden paso
     }
   | _PASO literal
     { //printf("lit3:%d\n", $2); 
@@ -281,16 +309,9 @@ assignment_statement
           err("invalid lvalue '%s' in assignment", $1);
         else
         {
-          char num_exp_name[32]; // jer ce biti broj svakako 
-          sprintf(num_exp_name, "%d", $3);
-
-          if(get_type(idx) != get_type(lookup_symbol(num_exp_name, VAR|PAR|LIT)))
+          if(get_type(idx) != get_type($3))
           {
                 err("incompatible types in assignment");
-      
-                printf("\ntype 1:%d\n", get_type(idx));
-                printf("\ntype 3:%d\n3:%d", get_type(lookup_symbol(num_exp_name, VAR|PAR|LIT)), $3);
-          
           } 
         }
       }
@@ -376,14 +397,9 @@ exp
 
 literal
   : _INT_NUMBER
-      { $$ = atoi(yylval.s); 
-      insert_literal($1, INT); 
-      // literal sada vraca svoju vrednost
-      }
-
+      { $$ = insert_literal($1, INT); }
   | _UINT_NUMBER
-      { $$ = atoi(yylval.s); 
-      insert_literal($1, UINT); }
+      { $$ = insert_literal($1, UINT); }
   ;
 
 function_call
