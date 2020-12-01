@@ -23,7 +23,7 @@ extern int yyerror(char *s);
 
 
 //tipovi podataka
-enum types { NO_TYPE, INT, UINT, VOID };
+enum types { NO_TYPE, INT, UINT, VOID, BOOL };
 
 //vrste simbola (moze ih biti maksimalno 32)
 enum kinds { NO_KIND = 0x1, REG = 0x2, LIT = 0x4, 
@@ -34,6 +34,10 @@ enum arops { ADD, SUB, MUL, DIV, AROP_NUMBER };
 
 //konstante inc i dec operatora
 enum incops { INC };
+
+
+// konstantne bool operator
+enum boolops { AND, OR, NOT, XOR };
 
 //konstante relacionih operatora
 enum relops { LT, GT, LE, GE, EQ, NE, RELOP_NUMBER };

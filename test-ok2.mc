@@ -1,7 +1,15 @@
 //OPIS: jedna deklaracija sa tri promenljive
 int main() {
-    unsigned a,b,c;
+    unsigned a,c;
+    bool b;
+    
+    bool g;
     a = 2u;
-    b = 3u;
     c = 4u;
+    b = true;
+    if ( c < 4u ^ true ) 
+    {
+
+    }
+    return 0;
 }

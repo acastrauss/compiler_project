@@ -36,6 +36,7 @@
 %token <s> _ID
 %token <s> _INT_NUMBER
 %token <s> _UINT_NUMBER
+%token <s> _BOOL_VALUE
 
 %token _LPAREN
 %token _RPAREN
@@ -49,8 +50,10 @@
 %token <i> _AROP
 %token <i> _RELOP
 %token <i> _INCOP
+%token <i> _BOOLOP
 
 %type <i> num_exp inc_exp exp literal function_call argument argument_list real_arg_list rel_exp 
+%type <i> bool_exp basic_bool
 
 %nonassoc ONLY_IF
 %nonassoc _ELSE
@@ -86,12 +89,7 @@ function
       }
     _RPAREN body
       {
-        //print_symtab();
-          //printf("\nnum_of_p: %d\nfun_indx:%d\n", num_of_param, fun_idx);
-          //print_symtab();
-          //printf("\nqweqweqwe\n");
-          
-          clear_symbols(fun_idx + num_of_param + 1); // ne brise parametre, vec ce u sledecoj petlji da im izbrise nazive
+        clear_symbols(fun_idx + num_of_param + 1); // ne brise parametre, vec ce u sledecoj petlji da im izbrise nazive
         
         if(num_of_param) 
         { 
@@ -203,11 +201,28 @@ assignment_statement
             {
                 err("incompatible types in assignment");
       
-                printf("1:%d\n", get_type(idx));
-                printf("3:%d\n", get_type($3));
+                //printf("1:%d\n", get_type(idx));
+                //printf("3:%d\n", get_type($3));
           
             }
       }
+  |
+   _ID _ASSIGN bool_exp _SEMICOLON
+      {
+        int idx = lookup_symbol($1, VAR|PAR);
+        if(idx == NO_INDEX)
+          err("invalid lvalue '%s' in assignment", $1);
+        else
+          if(get_type(idx) != get_type($3))
+            {
+                err("incompatible types in assignment");
+      
+                //printf("1:%d\n", get_type(idx));
+                //printf("3:%d\n", get_type($3));
+          
+            }
+      }
+  
   ;
 
 num_exp
@@ -222,6 +237,17 @@ num_exp
           }
           
       }
+  ;
+
+basic_bool
+  : _BOOL_VALUE
+    { $$ = insert_literal($1, BOOL); }
+  | rel_exp
+  ;
+
+bool_exp
+  : basic_bool
+  | bool_exp _BOOLOP basic_bool
   ;
 
 inc_exp
@@ -316,7 +342,7 @@ if_statement
   ;
 
 if_part
-  : _IF _LPAREN rel_exp _RPAREN statement
+  : _IF _LPAREN bool_exp _RPAREN statement
   ;
 
 rel_exp
@@ -333,6 +359,7 @@ return_statement
         if(get_type(fun_idx) != get_type($2))
           err("incompatible types in return");
       }
+      
   | _RETURN _SEMICOLON
     {
         if (get_type(fun_idx) != VOID)
@@ -372,4 +399,3 @@ int main() {
   else
     return error_count; //semantic errors
 }
-
