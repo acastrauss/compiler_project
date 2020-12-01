@@ -19,8 +19,12 @@
 "bool"               { yylval.i = BOOL; return _TYPE; }
 "void"               { yylval.i = VOID; return _TYPE; }
 
+"para"               { return _PARA; }
+"en"                 { return _EN; }
+".."                 { return _DDOT; }
+"paso"               { return _PASO; }
 
-"true"|"false"          { yylval.s = strdup(yytext);
+"true"|"false"       { yylval.s = strdup(yytext);
                           return _BOOL_VALUE; }
 
 "("                  { return _LPAREN; }

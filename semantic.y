@@ -20,6 +20,8 @@
   int id_type = 0; 
   int num_of_param = 0;
   int curr_arg = 0;
+
+  int indx_para = 0;
 %}
 
 %union {
@@ -32,6 +34,11 @@
 %token _IF
 %token _ELSE
 %token _RETURN
+
+%token <s> _PARA
+%token _EN
+%token _DDOT
+%token _PASO
 
 %token <s> _ID
 %token <s> _INT_NUMBER
@@ -54,6 +61,7 @@
 
 %type <i> num_exp inc_exp exp literal function_call argument argument_list real_arg_list rel_exp 
 %type <i> bool_exp basic_bool
+%type <i> paso_part para_statement
 
 %nonassoc ONLY_IF
 %nonassoc _ELSE
@@ -185,6 +193,77 @@ statement
   | assignment_statement
   | if_statement
   | exp_statement
+  | para_statement
+  ;
+
+para_statement
+  : _PARA _ID 
+    {
+      int idx = lookup_symbol($2, VAR|PAR);
+      if(idx == NO_INDEX)
+        err("invalid lvalue '%s' in para statement", $1);
+      
+      indx_para = idx;
+    }
+  _EN _LPAREN literal _DDOT literal paso_part _RPAREN statement 
+  {
+    int idx_type = get_type(indx_para);
+    
+    // imena, tj. bas vrednoti ali kao string jer treba za tabelu tako
+    char lit1_name[32];
+    char lit2_name[32];
+    char lit3_name[32];
+
+    sprintf(lit1_name, "%d", $6);
+    sprintf(lit2_name, "%d", $8);
+    sprintf(lit3_name, "%d", $9);
+
+    int lit1_type = get_type(lookup_symbol(lit1_name, LIT));
+    int lit2_type = get_type(lookup_symbol(lit2_name, LIT));
+    
+    int lit1 = $6;
+    int lit2 = $8;
+    int lit3 = $9;
+
+    int lit3_type;
+    if ($9 == 1) 
+    {
+      lit3_type = idx_type; // ako nije naveden paso tip, racunace kao da je istog tipa kao idx
+    }
+    else 
+    {
+      lit3_type = get_type(lookup_symbol(lit3_name, LIT));
+    }
+
+    // tipovi iteratora i parametara
+    if (
+      idx_type != lit1_type ||
+      idx_type != lit2_type || 
+      idx_type != lit3_type 
+    )
+    {
+      err("incompatible types for para statement.\n");
+
+    }
+    // da li su vrednosti korektne, jer bi trebalo da 
+    // lit1 < lit2 i lit3 > 0
+    // ili
+    // lit1 > lit2 i lit3 < 0
+
+    if (
+      ! (lit1 < lit2 && lit3 > 0 ) 
+    )
+    err("invalid values for iterator constants.\n");
+  }
+  ;
+
+paso_part
+  : { $$ = 1; // pomeraj je 1
+    }
+  | _PASO literal
+    { //printf("lit3:%d\n", $2); 
+      $$ = $2;
+    }
   ;
 
 exp_statement
@@ -238,8 +317,8 @@ num_exp
         if(get_type($1) != get_type($3))
           {
             err("invalid operands: arithmetic operation");
-            printf("1:%d\n", $1);
-            printf("3:%d\n", $3);
+            //printf("1:%d\n", $1);
+            //printf("3:%d\n", $3);
           }
           
       }
@@ -293,10 +372,14 @@ exp
 
 literal
   : _INT_NUMBER
-      { $$ = insert_literal($1, INT); }
+      { $$ = atoi(yylval.s); 
+      insert_literal($1, INT); 
+      // literal sada vraca svoju vrednost
+      }
 
   | _UINT_NUMBER
-      { $$ = insert_literal($1, UINT); }
+      { $$ = atoi(yylval.s); 
+      insert_literal($1, UINT); }
   ;
 
 function_call
