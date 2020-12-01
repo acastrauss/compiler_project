@@ -184,6 +184,12 @@ statement
   : compound_statement
   | assignment_statement
   | if_statement
+  | exp_statement
+  ;
+
+exp_statement
+  : num_exp _SEMICOLON
+  | bool_exp _SEMICOLON
   ;
 
 compound_statement
@@ -243,6 +249,10 @@ basic_bool
   : _BOOL_VALUE
     { $$ = insert_literal($1, BOOL); }
   | rel_exp
+  | exp _BOOLOP basic_bool
+    {
+      // any expresion != 0 is true
+    }
   ;
 
 bool_exp

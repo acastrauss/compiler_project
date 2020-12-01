@@ -7,9 +7,9 @@ int main() {
     a = 2u;
     c = 4u;
     b = true;
-    if ( c < 4u ^ true ) 
+    if ( true and c++ < ++a and ++a ^ true ) 
     {
-
+    
     }
     return 0;
 }
