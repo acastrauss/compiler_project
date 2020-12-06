@@ -1,4 +1,4 @@
-//OPIS: definicija drugih fja sa ili bez parametara (koristi se i dodatni bool tip)
+//OPIS: definicija drugih fja sa ili bez parametara (koristi se i dodatni bool tip, i moguce je vise parametara)
 // kao i njihovi pozivi
 bool f1(int a) 
 {
@@ -12,6 +12,12 @@ void f2(bool g)
 {
     // moze bez return-a jer je void
     
+}
+
+
+void f4(int a, bool b) 
+{
+
 }
 
 unsigned f3()
@@ -31,6 +37,7 @@ int main() {
     g = f1(a);
     f2(true);
     ua = f3() + 4u;
-    
+    f4(a, true);
+
     return 0;
 }

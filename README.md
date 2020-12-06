@@ -9,3 +9,6 @@ TO DO: Uradi branch, pogledaj da li bool treba da vrati vrednost ili indeks doda
 
 1.12.2020. 19:30 Dodao branch izraz, vratio
 da literal vraca svoj indeks radi lakse implementacije
+
+6.12.2020. 21:40 Uradjena dokumentacija i zavrseno sve za prvu kontrolnu tacku
+NOTE: Popravi za fju sa vise parametara da se ne prepuni tabela
