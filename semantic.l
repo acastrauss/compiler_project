@@ -51,7 +51,7 @@
 
 "&&"|"and"           { yylval.i = AND; return _BOOLOP; }
 "||"|"or"            { yylval.i = OR; return _BOOLOP; }
-"!"|"not"            { yylval.i = NOT; return _BOOLOP; }
+"!"|"not"            { return _NOT; }
 "^"|"xor"            { yylval.i = XOR; return _BOOLOP; }
 
 "<"                  { yylval.i = LT; return _RELOP; }
@@ -64,7 +64,7 @@
 [a-zA-Z_][a-zA-Z0-9_]*  { yylval.s = strdup(yytext);
                           return _ID; } // identifikator
 
-[+-]?((0|[1-9][0-9]{0,9})|0b[01]{1,32}|0x[a-fA-F0-9]{1,8}) { yylval.s = strdup(yytext); 
+([+-]?(0|[1-9][0-9]{0,9}))|(0b[01]{1,32})|(0x[a-fA-F0-9]{1,8}) { yylval.s = strdup(yytext); 
                                                          return _INT_NUMBER;}
 
 ((0|[1-9][0-9]{0,9})|0b[01]{1,32}|0x[a-fA-F0-9]{1,8})[uU] { yylval.s = strdup(yytext); 

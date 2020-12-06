@@ -1,0 +1,9 @@
+//OPIS: warning za fju koja je ima tip (nije void) a bez povratne vrednosti je
+bool f() 
+{
+    return;
+}
+
+int main() 
+{
+}

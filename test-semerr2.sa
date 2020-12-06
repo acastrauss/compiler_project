@@ -1,0 +1,6 @@
+//OPIS: Semanticka greska, void kao tip promenljive
+int main() {
+    void t = 4;
+
+    return 0 ;
+}

@@ -1,0 +1,8 @@
+//OPIS: definicija funkcije main i deklaracija vise promenljivih kao i matematicki izrazi (ukljucujuci post inc), i return
+
+int main() {
+    int a,b;
+    a = 2 + b++ - 5;
+    b = 3 - ++a;
+    return 0;
+}

@@ -1,0 +1,17 @@
+//OPIS: para iskaz
+int main() {
+    
+    int zbir = 0;
+    int razlika = 0;
+    int i;
+
+    para i en(1..5 paso 2)
+    {
+        zbir = zbir + i;
+        razlika = razlika - i;
+    }
+    para i en (3..5)
+        razlika = zbir - i;
+
+    return 0;
+}

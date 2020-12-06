@@ -23,6 +23,8 @@
 
   int indx_para = 0;
   int indx_branch = 0;
+
+  bool has_return = 0;
 %}
 
 %union {
@@ -64,6 +66,8 @@
 %token _COMMA
 %token _RARROW
 
+%token _NOT
+
 %token <i> _AROP
 %token <i> _RELOP
 %token <i> _INCOP
@@ -100,6 +104,8 @@ function
           fun_idx = insert_symbol($2, FUN, $1, NO_ATR, NO_ATR);
         else 
           err("redefinition of function '%s'", $2);
+
+        has_return = 0;
       }
     _LPAREN real_param_list
       {
@@ -107,6 +113,11 @@ function
       }
     _RPAREN body
       {
+        if(!has_return && (get_type(fun_idx) != VOID)) 
+        {
+          warning("function should return non void value.");
+        }
+
         clear_symbols(fun_idx + num_of_param + 1); // ne brise parametre, vec ce u sledecoj petlji da im izbrise nazive
         
         if(num_of_param) 
@@ -149,12 +160,7 @@ parameter
   ;
 
 body
-  : _LBRACKET variable_list statement_list return_statement _RBRACKET
-  | _LBRACKET variable_list statement_list _RBRACKET
-    {
-        if (get_type(fun_idx) != VOID)
-          warning("function should return non void value.");
-    }
+  : _LBRACKET variable_list statement_list _RBRACKET
   ;
 
 variable_list
@@ -171,7 +177,12 @@ variable
       id_type = $1;
       //printf("%d\n", $1);
     }
-  id_list _SEMICOLON
+  id_list opt_assign
+  ;
+
+opt_assign
+  : _SEMICOLON
+  | _ASSIGN exp_statement
   ;
 
 id_list
@@ -203,6 +214,7 @@ statement
   | exp_statement
   | para_statement
   | branch_statement
+  | return_statement {has_return = 1;}
   ;
 
 branch_statement
@@ -354,6 +366,9 @@ basic_bool
     {
       // any expresion != 0 is true
     }
+  | _NOT _LPAREN basic_bool _RPAREN {$$ = $3; }
+  | _NOT _LPAREN exp _RPAREN {$$ = $3; }
+  | _LPAREN bool_exp _RPAREN { $$ = $2; }
   ;
 
 bool_exp
@@ -438,6 +453,15 @@ argument
       //printf("\ntype param: %d, type arg: %d\n", get_type(fcall_idx + curr_arg), get_type($1));
       //printf("\n param kind: %d\n", get_kind(fcall_idx + curr_arg));
       //print_symtab();
+
+      if(get_type(fcall_idx + curr_arg) != get_type($1))
+        err("incompatible type for argument in '%s'",
+            get_name(fcall_idx));
+      $$ = curr_arg;
+    }
+  | bool_exp
+    {
+      curr_arg++;
 
       if(get_type(fcall_idx + curr_arg) != get_type($1))
         err("incompatible type for argument in '%s'",

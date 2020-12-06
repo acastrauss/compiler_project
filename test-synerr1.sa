@@ -1,0 +1,6 @@
+//OPIS: Sintaksna greska, ne deklarisu se lepo promenljive
+int main() {
+    int ,a,b;
+
+    return 0 ;
+}

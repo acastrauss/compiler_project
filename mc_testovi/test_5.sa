@@ -1,0 +1,22 @@
+//OPIS: logicki izrazi
+int main() {
+    unsigned a,c;
+    bool b;
+    4
+    bool g = false;
+    a = 2u;
+    c = 4u;
+    b = true;
+    g = not(b);
+
+    
+    if ( true and c++ < ++a || ++a ^ true ) 
+    {
+        return true;
+    }
+    else 
+    {
+        return not(true) || b ^ false;
+    }
+    return 0;
+}

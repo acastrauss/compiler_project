@@ -1,0 +1,7 @@
+//OPIS: binarne i hex vrednosti za int ili unsigned int
+int main() {
+    int a = 0xaf2c;
+    unsigned b = 0b10111u;
+    
+    return 0 ;
+}

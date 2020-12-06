@@ -1,0 +1,9 @@
+//OPIS: Semanticka greska, postinkrement za fju
+
+int f() { return 4; }
+
+int main() {
+    f++;
+
+    return 0 ;
+}

@@ -76,11 +76,12 @@ extern int yydebug;
     _SEMICOLON = 282,
     _COMMA = 283,
     _RARROW = 284,
-    _AROP = 285,
-    _RELOP = 286,
-    _INCOP = 287,
-    _BOOLOP = 288,
-    ONLY_IF = 289
+    _NOT = 285,
+    _AROP = 286,
+    _RELOP = 287,
+    _INCOP = 288,
+    _BOOLOP = 289,
+    ONLY_IF = 290
   };
 #endif
 
@@ -88,12 +89,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 28 "semantic.y"
+#line 30 "semantic.y"
 
   int i;
   char *s;
 
-#line 97 "semantic.tab.h"
+#line 98 "semantic.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

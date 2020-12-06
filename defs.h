@@ -37,7 +37,7 @@ enum incops { INC };
 
 
 // konstantne bool operator
-enum boolops { AND, OR, NOT, XOR };
+enum boolops { AND, OR, XOR };
 
 //konstante relacionih operatora
 enum relops { LT, GT, LE, GE, EQ, NE, RELOP_NUMBER };

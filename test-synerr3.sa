@@ -1,0 +1,6 @@
+//OPIS: Sintaksna greska, pogresno napisan izraz
+int main() {
+    int a,b = a ^ and false;
+
+    return 0 ;
+}
