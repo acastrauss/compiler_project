@@ -1,0 +1,5 @@
+//OPIS: Semanticka greska, pogresna povratna vrednost (za void)
+void main() {
+    
+    return 0 ;
+}

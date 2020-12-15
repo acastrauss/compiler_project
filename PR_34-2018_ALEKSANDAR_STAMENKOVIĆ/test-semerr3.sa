@@ -1,0 +1,5 @@
+//OPIS: Semanticka greska, pogresna povratna vrednost
+int main() {
+    
+    return false ;
+}

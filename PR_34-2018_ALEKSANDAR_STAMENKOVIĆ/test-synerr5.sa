@@ -1,0 +1,5 @@
+//OPIS: Sintaksna greska za return
+int main() {
+
+    return return 0 ;
+}

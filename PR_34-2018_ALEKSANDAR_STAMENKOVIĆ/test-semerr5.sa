@@ -1,0 +1,12 @@
+//OPIS: Semanticka greska, ponovno definisanje/deklarisanje promenljive
+
+int f(int a) 
+{ 
+    unsigned a = 5;
+    return 4;
+}
+
+int main() {
+    
+    return 0 ;
+}

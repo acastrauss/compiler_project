@@ -1,0 +1,6 @@
+//OPIS: Sintaksna greska, pogresni parametri
+int main(int ag,    ) {
+    int a,b;
+
+    return 0 ;
+}

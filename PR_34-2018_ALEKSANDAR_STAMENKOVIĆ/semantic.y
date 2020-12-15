@@ -3,7 +3,6 @@
   #include <stdlib.h>
   #include "defs.h"
   #include "symtab.h"
-  #include "codegen.h"
 
   int yyparse(void);
   int yylex(void);
@@ -11,7 +10,6 @@
   void warning(char *s);
 
   extern int yylineno;
-  int out_lin = 0;
   char char_buffer[CHAR_BUFFER_LENGTH];
   int error_count = 0;
   int warning_count = 0;
@@ -27,11 +25,6 @@
   int indx_branch = 0;
 
   bool has_return = 0;
-
-  int lab_num = -1;
-  FILE *output;
-
-  int glb_num = 0; // num of global vars
 %}
 
 %union {

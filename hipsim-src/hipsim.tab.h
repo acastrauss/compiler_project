@@ -34,8 +34,8 @@
 /* Undocumented macros, especially those whose name start with YY_,
    are private implementation details.  Do not rely on them.  */
 
-#ifndef YY_YY_SEMANTIC_TAB_H_INCLUDED
-# define YY_YY_SEMANTIC_TAB_H_INCLUDED
+#ifndef YY_YY_HIPSIM_TAB_H_INCLUDED
+# define YY_YY_HIPSIM_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -49,39 +49,38 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    _TYPE = 258,
-    _IF = 259,
-    _ELSE = 260,
-    _RETURN = 261,
-    _PARA = 262,
-    _EN = 263,
-    _DDOT = 264,
-    _PASO = 265,
-    _BRANCH = 266,
-    _FIRST = 267,
-    _SECOND = 268,
-    _THIRD = 269,
-    _OTHERWISE = 270,
-    _ID = 271,
-    _INT_NUMBER = 272,
-    _UINT_NUMBER = 273,
-    _BOOL_VALUE = 274,
-    _LPAREN = 275,
-    _RPAREN = 276,
-    _LBRACKET = 277,
-    _RBRACKET = 278,
-    _LSQRBRACKET = 279,
-    _RSQRBRACKET = 280,
-    _ASSIGN = 281,
-    _SEMICOLON = 282,
-    _COMMA = 283,
-    _RARROW = 284,
-    _NOT = 285,
-    _AROP = 286,
-    _RELOP = 287,
-    _INCOP = 288,
-    _BOOLOP = 289,
-    ONLY_IF = 290
+    _WORD = 258,
+    _PUSH = 259,
+    _POP = 260,
+    _CALL = 261,
+    _RET = 262,
+    _CMP = 263,
+    _JMP = 264,
+    _JEQ = 265,
+    _JNE = 266,
+    _JGT = 267,
+    _JLT = 268,
+    _JGE = 269,
+    _JLE = 270,
+    _JC = 271,
+    _JNC = 272,
+    _JO = 273,
+    _JNO = 274,
+    _ADD = 275,
+    _SUB = 276,
+    _MUL = 277,
+    _DIV = 278,
+    _MOV = 279,
+    _HALT = 280,
+    _REGISTER = 281,
+    _CONSTANT = 282,
+    _NUMBER = 283,
+    _LABEL_DEF = 284,
+    _LABEL = 285,
+    _ADDRESS = 286,
+    _COMMA = 287,
+    _LPAREN = 288,
+    _RPAREN = 289
   };
 #endif
 
@@ -89,12 +88,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 37 "semantic.y"
+#line 49 "hipsim.y"
 
-  int i;
-  char *s;
+    long i;
+    char* s;
 
-#line 98 "semantic.tab.h"
+#line 97 "hipsim.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -107,4 +106,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_SEMANTIC_TAB_H_INCLUDED  */
+#endif /* !YY_YY_HIPSIM_TAB_H_INCLUDED  */
