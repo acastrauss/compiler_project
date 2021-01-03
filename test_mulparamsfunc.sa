@@ -1,0 +1,51 @@
+
+int f1(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas) 
+{
+
+}
+
+int f2(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas) 
+{
+    
+}
+
+int f3(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas)  
+{
+    
+}
+
+int f4(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas)  
+{
+    
+}
+
+int f5(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas)  
+{
+    
+}
+
+int f6(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas)  
+{
+    
+}
+
+int f7(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas) 
+{
+    
+}
+
+int f8(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas) 
+{
+    
+}
+
+//(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas)
+// ovo sam prekopirao zbog poziva da vidim parametre
+// enum types { NO_TYPE, INT, UINT, VOID, BOOL }; 
+
+int main() 
+{
+    f1(5, 6u, true, 5, 6u, false, -5, true, 77u, -44);
+
+    return 0;
+}

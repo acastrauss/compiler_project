@@ -11,6 +11,7 @@
 #define LAST_WORKING_REG      12
 #define FUN_REG               13
 #define CHAR_BUFFER_LENGTH   128
+#define MAX_ATR2 SYMBOL_TABLE_LENGTH - 1
 extern char char_buffer[CHAR_BUFFER_LENGTH];
 
 extern int out_lin;
@@ -51,6 +52,7 @@ static char* jumps[]={"JLTS", "JGTS", "JLES", "JGES", "JEQ ", "JNE ",
 
 static char* opp_jumps[]={"JGES", "JLES", "JGTS", "JLTS", "JNE ", "JEQ ",
                           "JGEU", "JLEU", "JGTU", "JLTU", "JNE ", "JEQ "};
+
 
 #endif
 

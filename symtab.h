@@ -2,14 +2,23 @@
 #ifndef SYMTAB_H
 #define SYMTAB_H
 
+
+typedef struct atr2_str
+{
+   unsigned occupied; // broj zauzetih clanova niza 
+   unsigned atr2[MAX_ATR2]; // MAX_ATR2 == 63, ako se napravi samo main i ima 63 parametra i samo se njima rukuje 
+} ATR2;
+
 // Element tabele simbola
 typedef struct sym_entry {
    char *   name;          // ime simbola
    unsigned kind;          // vrsta simbola
    unsigned type;          // tip vrednosti simbola
    unsigned atr1;          // dodatni attribut simbola
-   unsigned atr2;          // dodatni attribut simbola
+   ATR2*    atr2;          // dodatni attribut simbola
 } SYMBOL_ENTRY;
+
+ATR2* create_atr2(); // creates empty atr2
 
 // Vraca indeks prvog sledeceg praznog elementa.
 int get_next_empty_element(void);
@@ -21,7 +30,7 @@ int get_last_element(void);
 // i vraca indeks ubacenog elementa u tabeli simbola 
 // ili -1 u slucaju da nema slobodnog elementa u tabeli.
 int insert_symbol(char *name, unsigned kind, unsigned type, 
-                  unsigned atr1, unsigned atr2);
+                  unsigned atr1, ATR2* atr2);
 
 // Ubacuje konstantu u tabelu simbola (ako vec ne postoji).
 int insert_literal(char *str, unsigned type);
@@ -38,8 +47,8 @@ void     set_type(int index, unsigned type);
 unsigned get_type(int index);
 void     set_atr1(int index, unsigned atr1);
 unsigned get_atr1(int index);
-void     set_atr2(int index, unsigned atr2);
-unsigned get_atr2(int index);
+void     set_atr2(int index, ATR2* atr2);
+ATR2*    get_atr2(int index);
 
 void     clear_name(int index);
 // Brise elemente tabele od zadatog indeksa

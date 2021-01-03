@@ -32,6 +32,7 @@
   FILE *output;
 
   int glb_num = 0; // num of global vars
+
 %}
 
 %union {
@@ -94,7 +95,6 @@ program
       {  
         if(lookup_symbol("main", FUN) == NO_INDEX)
           err("undefined reference to 'main'");
-        
        }
   ;
 
@@ -108,7 +108,7 @@ function
       {
         fun_idx = lookup_symbol($2, FUN);
         if(fun_idx == NO_INDEX)
-          fun_idx = insert_symbol($2, FUN, $1, NO_ATR, NO_ATR);
+          fun_idx = insert_symbol($2, FUN, $1, NO_ATR, create_atr2());
         else 
           err("redefinition of function '%s'", $2);
 
@@ -117,6 +117,11 @@ function
     _LPAREN real_param_list
       {
           set_atr1(fun_idx, num_of_param);
+          
+          ATR2* atr2p = get_atr2(fun_idx);
+          if (atr2p == NULL) exit(55); // wrong index
+          
+          if(atr2p->occupied != num_of_param) exit(66); // not correct num of params
       }
     _RPAREN body
       {
@@ -125,8 +130,9 @@ function
           warning("function should return non void value.");
         }
 
-        clear_symbols(fun_idx + num_of_param + 1); // ne brise parametre, vec ce u sledecoj petlji da im izbrise nazive
+        clear_symbols(fun_idx + 1); // ne brise parametre, vec ce u sledecoj petlji da im izbrise nazive
         
+        /*
         if(num_of_param) 
         { 
           for (int i = 1; i < num_of_param + 1; i++) 
@@ -135,7 +141,7 @@ function
             clear_name(fun_idx + i);
           }
         }
-
+        */  
         //print_symtab();
 
         var_num = 0;
@@ -159,8 +165,14 @@ parameter
         if ($1 == VOID)
           err("parameter %s can not be void.", $2);
 
-        if(lookup_symbol($2, VAR|PAR) == NO_INDEX)
-          insert_symbol($2, PAR, $1, ++num_of_param, NO_ATR);
+        if(lookup_symbol($2, VAR|PAR) == NO_INDEX) 
+        {
+          insert_symbol($2, PAR, $1, ++num_of_param, create_atr2());
+          
+          ATR2* atr2p = get_atr2(fun_idx); // za svaki parametar koji prodje podesi atr2 za fju
+          if (atr2p == NULL) exit(55); // wrong index
+          atr2p->atr2[atr2p->occupied++] = $1;
+        }
         else 
            err("redefinition of '%s'", $2);
       }
@@ -196,14 +208,14 @@ id_list
   : _ID
       {
         if(lookup_symbol($1, VAR|PAR) == NO_INDEX)
-           insert_symbol($1, VAR, id_type, ++var_num, NO_ATR);
+           insert_symbol($1, VAR, id_type, ++var_num, create_atr2());
         else 
            err("redefinition of '%s'", $1);
       }
   | id_list _COMMA _ID
       {
         if(lookup_symbol($3, VAR|PAR) == NO_INDEX)
-           insert_symbol($3, VAR, id_type, ++var_num, NO_ATR);
+           insert_symbol($3, VAR, id_type, ++var_num, create_atr2());
         else 
            err("redefinition of '%s'", $3);
       }
@@ -427,9 +439,15 @@ function_call
         fcall_idx = lookup_symbol($1, FUN);
         if(fcall_idx == NO_INDEX)
           err("'%s' is not a function", $1);
+
+        //print_symtab();
       }
     _LPAREN real_arg_list _RPAREN
       {
+        //printf("\natr1: %d \t arg_list: %d\n ", get_atr1(fcall_idx), $4);
+
+        //print_symtab();
+
         if(get_atr1(fcall_idx) != $4)
           err("wrong number of args to function '%s'", 
               get_name(fcall_idx));
@@ -457,11 +475,11 @@ argument
     { 
       curr_arg++;
       
-      //printf("\ntype param: %d, type arg: %d\n", get_type(fcall_idx + curr_arg), get_type($1));
-      //printf("\n param kind: %d\n", get_kind(fcall_idx + curr_arg));
-      //print_symtab();
+      ATR2* atr2p = get_atr2(fcall_idx);
 
-      if(get_type(fcall_idx + curr_arg) != get_type($1))
+      //printf("\natr2 type: %d \t exp_type: %d\t exp: %s\n", atr2p->atr2[curr_arg - 1], get_type($1), get_name($1));
+
+      if(atr2p->atr2[curr_arg - 1] != get_type($1))
         err("incompatible type for argument in '%s'",
             get_name(fcall_idx));
       $$ = curr_arg;
@@ -470,7 +488,11 @@ argument
     {
       curr_arg++;
 
-      if(get_type(fcall_idx + curr_arg) != get_type($1))
+      ATR2* atr2p = get_atr2(fcall_idx);
+
+      //printf("\natr2 type: %d \t bool_exp_type: %d\n", atr2p->atr2[curr_arg - 1], get_type($1));
+
+      if(atr2p->atr2[curr_arg - 1] != get_type($1))
         err("incompatible type for argument in '%s'",
             get_name(fcall_idx));
       $$ = curr_arg;
@@ -526,6 +548,7 @@ void warning(char *s) {
 }
 
 int main() {
+
   int synerr;
   init_symtab();
 
