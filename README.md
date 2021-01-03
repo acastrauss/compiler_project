@@ -14,3 +14,5 @@ da literal vraca svoj indeks radi lakse implementacije
 NOTE: Popravi za fju sa vise parametara da se ne prepuni tabela
 
 15.12.2020. 09:22 Dodate sve definicije i headeri za generisanje koda, prepisi kod u .y fajl
+
+3.1.2021. 19:10 Popravio resenje za vise parametara, da radi dinamicki
