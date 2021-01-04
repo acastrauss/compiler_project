@@ -73,6 +73,8 @@
 %token _SEMICOLON
 %token _COMMA
 %token _RARROW
+%token _QMARK
+%token _DOUBLEDOT
 
 %token _NOT
 
@@ -81,7 +83,7 @@
 %token <i> _INCOP
 %token <i> _BOOLOP
 
-%type <i> num_exp inc_exp exp literal function_call argument argument_list real_arg_list rel_exp 
+%type <i> num_exp inc_exp exp literal function_call argument argument_list real_arg_list rel_exp exp_statement opt_assign conditional_exp exp_c
 %type <i> bool_exp basic_bool
 %type <i> paso_part 
 
@@ -91,11 +93,37 @@
 %%
 
 program
-  : function_list
+  : global_varlist
+    function_list
       {  
         if(lookup_symbol("main", FUN) == NO_INDEX)
           err("undefined reference to 'main'");
        }
+  ;
+
+global_varlist
+  : /* nothing */
+  | global_varlist global_var
+  ;
+
+global_var
+  : _TYPE _ID
+      {
+        if(lookup_symbol($2, GLB) == NO_INDEX) 
+        {
+          //gen_glbvar(insert_symbol($2, GLB, $1, ++glb_num, create_atr2()));
+          insert_symbol($2, GLB, $1, ++glb_num, create_atr2());
+        }
+        else 
+           err("redefinition of '%s'", $2);
+      }
+      opt_assign 
+      {
+        if ((get_type($4) != $1) && $4 != -1) 
+        {
+          err("incompatible types in assignment.");
+        }
+      }
   ;
 
 function_list
@@ -197,11 +225,17 @@ variable
       //printf("%d\n", $1);
     }
   id_list opt_assign
+    {
+      if ((get_type($4) != $1) && ($4 != -1))
+      {
+        err("incompatible types in assignment.");
+      }
+    }
   ;
 
 opt_assign
-  : _SEMICOLON
-  | _ASSIGN exp_statement
+  : _SEMICOLON { $$ = -1; }
+  | _ASSIGN exp_statement { $$ = $2; /* vraca svoj indeks*/}
   ;
 
 id_list
@@ -322,8 +356,9 @@ paso_part
   ;
 
 exp_statement
-  : num_exp _SEMICOLON
-  | bool_exp _SEMICOLON
+  : num_exp _SEMICOLON { $$ = $1; /* jer vracaju svoj indeks iz tabele kao povratnu vrednost */ }
+  | bool_exp _SEMICOLON { $$ = $1; }
+  | conditional_exp _SEMICOLON { $$ = $1; }
   ;
 
 compound_statement
@@ -424,6 +459,27 @@ exp
   | function_call
   | _LPAREN num_exp _RPAREN
       { $$ = $2; }
+  | _LPAREN conditional_exp _RPAREN
+      { $$ = $2; }
+  ;
+
+conditional_exp
+  : _LPAREN bool_exp _RPAREN _QMARK exp_c _DOUBLEDOT exp_c 
+  {
+    //printf("\ntype(1): %d \t type(2): %d", get_type($5), get_type($7));
+    //print_symtab();
+    if (get_type($5) != get_type($7)) 
+    {
+      err("incompatible types in conditional expression.");
+    }
+    $$ = $5; // ovo mozda treba promeniti kada se ispituje kog je tipa 
+  }
+
+exp_c
+  : num_exp
+    { $$ = $1; }
+  | bool_exp
+    { $$ = $1; }
   ;
 
 literal

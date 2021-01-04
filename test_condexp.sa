@@ -1,0 +1,9 @@
+//OPIS: Conditional expression tacno
+
+int main() 
+{
+    int a = 5;
+    int b = ( a > 3 ) ? a + b : b + 5;
+
+    return 0;
+}

@@ -1,0 +1,18 @@
+//OPIS: Conditional expression pogresan tip za dodelu
+
+int main() 
+{
+    int a = 5;
+    int b = ( a > 3 ) ? 5 : false;
+
+    return 0;
+}
+
+// NAPOMENA:
+/*
+    Ovde se mozda moze uzeti kao greska ukoliko je prvi izraz iz conditional exp korektnog tipa, a drugi nije (u konkretnom primeru
+    bi to znacilo da je prvi int a drugi recimo bool), kompajler nece prepoznati to kao gresku dodele (jer b nije bool tipa), vec ce
+    samo prijaviti gresku da nisu isti tipovi u izrazima za conditional expression. Medjutim ukoliko je situacija suprotna prijavice i tu gresku,
+    i razloga jer se samo indeks prvog izraza vraca kao vrednost conditional exp. Ali svakako nikada nije moguce da se napise pogresan tip u dodeli jer
+    se moraju poklapati prvi i drugi tip, a kompajler ce prepoznati nepoklapanje promenljive kojoj se dodeljuje i prvog tipa.
+*/

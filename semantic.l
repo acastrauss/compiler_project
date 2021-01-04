@@ -44,6 +44,8 @@
 "="                  { return _ASSIGN; }
 ","                  { return _COMMA; }
 "->"                 { return _RARROW; }
+"?"                  { return _QMARK; }
+":"                  { return _DOUBLEDOT; }
 
 "+"                  { yylval.i = ADD; return _AROP; }
 "-"                  { yylval.i = SUB; return _AROP; }
