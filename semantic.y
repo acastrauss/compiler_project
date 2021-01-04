@@ -366,7 +366,7 @@ compound_statement
   ;
 
 assignment_statement
-  : _ID _ASSIGN num_exp _SEMICOLON
+  : _ID _ASSIGN exp_statement
       {
         int idx = lookup_symbol($1, VAR|PAR);
         if(idx == NO_INDEX)
@@ -379,23 +379,6 @@ assignment_statement
           } 
         }
       }
-  |
-   _ID _ASSIGN bool_exp _SEMICOLON
-      {
-        int idx = lookup_symbol($1, VAR|PAR);
-        if(idx == NO_INDEX)
-          err("invalid lvalue '%s' in assignment", $1);
-        else
-          if(get_type(idx) != get_type($3))
-            {
-                err("incompatible types in assignment");
-      
-                //printf("1:%d\n", get_type(idx));
-                //printf("3:%d\n", get_type($3));
-          
-            }
-      }
-  
   ;
 
 num_exp

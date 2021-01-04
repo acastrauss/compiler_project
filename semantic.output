@@ -75,63 +75,62 @@ Grammar
 
    45 compound_statement: _LBRACKET statement_list _RBRACKET
 
-   46 assignment_statement: _ID _ASSIGN num_exp _SEMICOLON
-   47                     | _ID _ASSIGN bool_exp _SEMICOLON
+   46 assignment_statement: _ID _ASSIGN exp_statement
 
-   48 num_exp: exp
-   49        | num_exp _AROP exp
+   47 num_exp: exp
+   48        | num_exp _AROP exp
 
-   50 basic_bool: _BOOL_VALUE
-   51           | rel_exp
-   52           | exp _BOOLOP basic_bool
-   53           | _NOT _LPAREN basic_bool _RPAREN
-   54           | _NOT _LPAREN exp _RPAREN
-   55           | _LPAREN bool_exp _RPAREN
+   49 basic_bool: _BOOL_VALUE
+   50           | rel_exp
+   51           | exp _BOOLOP basic_bool
+   52           | _NOT _LPAREN basic_bool _RPAREN
+   53           | _NOT _LPAREN exp _RPAREN
+   54           | _LPAREN bool_exp _RPAREN
 
-   56 bool_exp: basic_bool
-   57         | bool_exp _BOOLOP basic_bool
+   55 bool_exp: basic_bool
+   56         | bool_exp _BOOLOP basic_bool
 
-   58 inc_exp: _ID _INCOP
-   59        | _INCOP _ID
+   57 inc_exp: _ID _INCOP
+   58        | _INCOP _ID
 
-   60 exp: literal
-   61    | inc_exp
-   62    | _ID
-   63    | function_call
-   64    | _LPAREN num_exp _RPAREN
-   65    | _LPAREN conditional_exp _RPAREN
+   59 exp: literal
+   60    | inc_exp
+   61    | _ID
+   62    | function_call
+   63    | _LPAREN num_exp _RPAREN
+   64    | _LPAREN conditional_exp _RPAREN
 
-   66 conditional_exp: _LPAREN bool_exp _RPAREN _QMARK exp_c _DOUBLEDOT exp_c
+   65 conditional_exp: _LPAREN bool_exp _RPAREN _QMARK exp_c _DOUBLEDOT exp_c
 
-   67 exp_c: num_exp
-   68      | bool_exp
+   66 exp_c: num_exp
+   67      | bool_exp
 
-   69 literal: _INT_NUMBER
-   70        | _UINT_NUMBER
+   68 literal: _INT_NUMBER
+   69        | _UINT_NUMBER
 
-   71 $@9: %empty
+   70 $@9: %empty
 
-   72 function_call: _ID $@9 _LPAREN real_arg_list _RPAREN
+   71 function_call: _ID $@9 _LPAREN real_arg_list _RPAREN
 
-   73 real_arg_list: %empty
-   74              | argument_list
+   72 real_arg_list: %empty
+   73              | argument_list
 
-   75 argument_list: argument
-   76              | argument_list _COMMA argument
+   74 argument_list: argument
+   75              | argument_list _COMMA argument
 
-   77 argument: num_exp
-   78         | bool_exp
+   76 argument: num_exp
+   77         | bool_exp
 
-   79 if_statement: if_part
-   80             | if_part _ELSE statement
+   78 if_statement: if_part
+   79             | if_part _ELSE statement
 
-   81 if_part: _IF _LPAREN bool_exp _RPAREN statement
+   80 if_part: _IF _LPAREN bool_exp _RPAREN statement
 
-   82 rel_exp: num_exp _RELOP num_exp
+   81 rel_exp: num_exp _RELOP num_exp
 
-   83 return_statement: _RETURN num_exp _SEMICOLON
-   84                 | _RETURN bool_exp _SEMICOLON
-   85                 | _RETURN _SEMICOLON
+   82 return_statement: _RETURN num_exp _SEMICOLON
+   83                 | _RETURN bool_exp _SEMICOLON
+   84                 | _RETURN _SEMICOLON
 
 
 Terminals, with rules where they appear
@@ -139,9 +138,9 @@ Terminals, with rules where they appear
     $end (0) 0
     error (256)
     _TYPE <i> (258) 5 10 15 20
-    _IF (259) 81
-    _ELSE (260) 80
-    _RETURN (261) 83 84 85
+    _IF (259) 80
+    _ELSE (260) 79
+    _RETURN (261) 82 83 84
     _PARA <s> (262) 39
     _EN (263) 39
     _DDOT (264) 39
@@ -151,27 +150,27 @@ Terminals, with rules where they appear
     _SECOND (268) 36
     _THIRD (269) 36
     _OTHERWISE (270) 36
-    _ID <s> (271) 5 10 15 23 24 36 39 46 47 58 59 62 72
-    _INT_NUMBER <s> (272) 69
-    _UINT_NUMBER <s> (273) 70
-    _BOOL_VALUE <s> (274) 50
-    _LPAREN (275) 10 39 53 54 55 64 65 66 72 81
-    _RPAREN (276) 10 39 53 54 55 64 65 66 72 81
+    _ID <s> (271) 5 10 15 23 24 36 39 46 57 58 61 71
+    _INT_NUMBER <s> (272) 68
+    _UINT_NUMBER <s> (273) 69
+    _BOOL_VALUE <s> (274) 49
+    _LPAREN (275) 10 39 52 53 54 63 64 65 71 80
+    _RPAREN (276) 10 39 52 53 54 63 64 65 71 80
     _LBRACKET (277) 16 45
     _RBRACKET (278) 16 45
     _LSQRBRACKET (279) 36
     _RSQRBRACKET (280) 36
-    _ASSIGN (281) 22 46 47
-    _SEMICOLON (282) 21 42 43 44 46 47 83 84 85
-    _COMMA (283) 14 24 76
+    _ASSIGN (281) 22 46
+    _SEMICOLON (282) 21 42 43 44 82 83 84
+    _COMMA (283) 14 24 75
     _RARROW (284) 36
-    _QMARK (285) 66
-    _DOUBLEDOT (286) 66
-    _NOT (287) 53 54
-    _AROP <i> (288) 49
-    _RELOP <i> (289) 82
-    _INCOP <i> (290) 58 59
-    _BOOLOP <i> (291) 52 57
+    _QMARK (285) 65
+    _DOUBLEDOT (286) 65
+    _NOT (287) 52 53
+    _AROP <i> (288) 48
+    _RELOP <i> (289) 81
+    _INCOP <i> (290) 57 58
+    _BOOLOP <i> (291) 51 56
     ONLY_IF (292)
 
 
@@ -235,7 +234,7 @@ Nonterminals, with rules where they appear
         on right: 16 26 45
     statement (57)
         on left: 27 28 29 30 31 32 33
-        on right: 26 36 39 80 81
+        on right: 26 36 39 79 80
     branch_statement (58)
         on left: 36
         on right: 32
@@ -259,63 +258,63 @@ Nonterminals, with rules where they appear
         on right: 39
     exp_statement <i> (65)
         on left: 42 43 44
-        on right: 22 30
+        on right: 22 30 46
     compound_statement (66)
         on left: 45
         on right: 27
     assignment_statement (67)
-        on left: 46 47
+        on left: 46
         on right: 28
     num_exp <i> (68)
-        on left: 48 49
-        on right: 42 46 49 64 67 77 82 83
+        on left: 47 48
+        on right: 42 48 63 66 76 81 82
     basic_bool <i> (69)
-        on left: 50 51 52 53 54 55
-        on right: 52 53 56 57
+        on left: 49 50 51 52 53 54
+        on right: 51 52 55 56
     bool_exp <i> (70)
-        on left: 56 57
-        on right: 43 47 55 57 66 68 78 81 84
+        on left: 55 56
+        on right: 43 54 56 65 67 77 80 83
     inc_exp <i> (71)
-        on left: 58 59
-        on right: 61
+        on left: 57 58
+        on right: 60
     exp <i> (72)
-        on left: 60 61 62 63 64 65
-        on right: 48 49 52 54
+        on left: 59 60 61 62 63 64
+        on right: 47 48 51 53
     conditional_exp <i> (73)
-        on left: 66
-        on right: 44 65
+        on left: 65
+        on right: 44 64
     exp_c <i> (74)
-        on left: 67 68
-        on right: 66
+        on left: 66 67
+        on right: 65
     literal <i> (75)
-        on left: 69 70
-        on right: 36 39 41 60
+        on left: 68 69
+        on right: 36 39 41 59
     function_call <i> (76)
-        on left: 72
-        on right: 63
-    $@9 (77)
         on left: 71
-        on right: 72
+        on right: 62
+    $@9 (77)
+        on left: 70
+        on right: 71
     real_arg_list <i> (78)
-        on left: 73 74
-        on right: 72
+        on left: 72 73
+        on right: 71
     argument_list <i> (79)
-        on left: 75 76
-        on right: 74 76
+        on left: 74 75
+        on right: 73 75
     argument <i> (80)
-        on left: 77 78
-        on right: 75 76
+        on left: 76 77
+        on right: 74 75
     if_statement (81)
-        on left: 79 80
+        on left: 78 79
         on right: 29
     if_part (82)
-        on left: 81
-        on right: 79 80
+        on left: 80
+        on right: 78 79
     rel_exp <i> (83)
-        on left: 82
-        on right: 51
+        on left: 81
+        on right: 50
     return_statement (84)
-        on left: 83 84 85
+        on left: 82 83 84
         on right: 33
 
 
@@ -494,45 +493,45 @@ State 17
 
 State 18
 
-   58 inc_exp: _ID . _INCOP
-   62 exp: _ID .
-   72 function_call: _ID . $@9 _LPAREN real_arg_list _RPAREN
+   57 inc_exp: _ID . _INCOP
+   61 exp: _ID .
+   71 function_call: _ID . $@9 _LPAREN real_arg_list _RPAREN
 
     _INCOP  shift, and go to state 39
 
-    _LPAREN   reduce using rule 71 ($@9)
-    $default  reduce using rule 62 (exp)
+    _LPAREN   reduce using rule 70 ($@9)
+    $default  reduce using rule 61 (exp)
 
     $@9  go to state 40
 
 
 State 19
 
-   69 literal: _INT_NUMBER .
+   68 literal: _INT_NUMBER .
 
-    $default  reduce using rule 69 (literal)
+    $default  reduce using rule 68 (literal)
 
 
 State 20
 
-   70 literal: _UINT_NUMBER .
+   69 literal: _UINT_NUMBER .
 
-    $default  reduce using rule 70 (literal)
+    $default  reduce using rule 69 (literal)
 
 
 State 21
 
-   50 basic_bool: _BOOL_VALUE .
+   49 basic_bool: _BOOL_VALUE .
 
-    $default  reduce using rule 50 (basic_bool)
+    $default  reduce using rule 49 (basic_bool)
 
 
 State 22
 
-   55 basic_bool: _LPAREN . bool_exp _RPAREN
-   64 exp: _LPAREN . num_exp _RPAREN
-   65    | _LPAREN . conditional_exp _RPAREN
-   66 conditional_exp: _LPAREN . bool_exp _RPAREN _QMARK exp_c _DOUBLEDOT exp_c
+   54 basic_bool: _LPAREN . bool_exp _RPAREN
+   63 exp: _LPAREN . num_exp _RPAREN
+   64    | _LPAREN . conditional_exp _RPAREN
+   65 conditional_exp: _LPAREN . bool_exp _RPAREN _QMARK exp_c _DOUBLEDOT exp_c
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
@@ -555,15 +554,15 @@ State 22
 
 State 23
 
-   53 basic_bool: _NOT . _LPAREN basic_bool _RPAREN
-   54           | _NOT . _LPAREN exp _RPAREN
+   52 basic_bool: _NOT . _LPAREN basic_bool _RPAREN
+   53           | _NOT . _LPAREN exp _RPAREN
 
     _LPAREN  shift, and go to state 44
 
 
 State 24
 
-   59 inc_exp: _INCOP . _ID
+   58 inc_exp: _INCOP . _ID
 
     _ID  shift, and go to state 45
 
@@ -578,8 +577,8 @@ State 25
 State 26
 
    42 exp_statement: num_exp . _SEMICOLON
-   49 num_exp: num_exp . _AROP exp
-   82 rel_exp: num_exp . _RELOP num_exp
+   48 num_exp: num_exp . _AROP exp
+   81 rel_exp: num_exp . _RELOP num_exp
 
     _SEMICOLON  shift, and go to state 46
     _AROP       shift, and go to state 47
@@ -588,15 +587,15 @@ State 26
 
 State 27
 
-   56 bool_exp: basic_bool .
+   55 bool_exp: basic_bool .
 
-    $default  reduce using rule 56 (bool_exp)
+    $default  reduce using rule 55 (bool_exp)
 
 
 State 28
 
    43 exp_statement: bool_exp . _SEMICOLON
-   57 bool_exp: bool_exp . _BOOLOP basic_bool
+   56 bool_exp: bool_exp . _BOOLOP basic_bool
 
     _SEMICOLON  shift, and go to state 49
     _BOOLOP     shift, and go to state 50
@@ -604,19 +603,19 @@ State 28
 
 State 29
 
-   61 exp: inc_exp .
+   60 exp: inc_exp .
 
-    $default  reduce using rule 61 (exp)
+    $default  reduce using rule 60 (exp)
 
 
 State 30
 
-   48 num_exp: exp .
-   52 basic_bool: exp . _BOOLOP basic_bool
+   47 num_exp: exp .
+   51 basic_bool: exp . _BOOLOP basic_bool
 
     _BOOLOP  shift, and go to state 51
 
-    $default  reduce using rule 48 (num_exp)
+    $default  reduce using rule 47 (num_exp)
 
 
 State 31
@@ -628,23 +627,23 @@ State 31
 
 State 32
 
-   60 exp: literal .
+   59 exp: literal .
 
-    $default  reduce using rule 60 (exp)
+    $default  reduce using rule 59 (exp)
 
 
 State 33
 
-   63 exp: function_call .
+   62 exp: function_call .
 
-    $default  reduce using rule 63 (exp)
+    $default  reduce using rule 62 (exp)
 
 
 State 34
 
-   51 basic_bool: rel_exp .
+   50 basic_bool: rel_exp .
 
-    $default  reduce using rule 51 (basic_bool)
+    $default  reduce using rule 50 (basic_bool)
 
 
 State 35
@@ -682,23 +681,23 @@ State 38
 
 State 39
 
-   58 inc_exp: _ID _INCOP .
+   57 inc_exp: _ID _INCOP .
 
-    $default  reduce using rule 58 (inc_exp)
+    $default  reduce using rule 57 (inc_exp)
 
 
 State 40
 
-   72 function_call: _ID $@9 . _LPAREN real_arg_list _RPAREN
+   71 function_call: _ID $@9 . _LPAREN real_arg_list _RPAREN
 
     _LPAREN  shift, and go to state 56
 
 
 State 41
 
-   49 num_exp: num_exp . _AROP exp
-   64 exp: _LPAREN num_exp . _RPAREN
-   82 rel_exp: num_exp . _RELOP num_exp
+   48 num_exp: num_exp . _AROP exp
+   63 exp: _LPAREN num_exp . _RPAREN
+   81 rel_exp: num_exp . _RELOP num_exp
 
     _RPAREN  shift, and go to state 57
     _AROP    shift, and go to state 47
@@ -707,9 +706,9 @@ State 41
 
 State 42
 
-   55 basic_bool: _LPAREN bool_exp . _RPAREN
-   57 bool_exp: bool_exp . _BOOLOP basic_bool
-   66 conditional_exp: _LPAREN bool_exp . _RPAREN _QMARK exp_c _DOUBLEDOT exp_c
+   54 basic_bool: _LPAREN bool_exp . _RPAREN
+   56 bool_exp: bool_exp . _BOOLOP basic_bool
+   65 conditional_exp: _LPAREN bool_exp . _RPAREN _QMARK exp_c _DOUBLEDOT exp_c
 
     _RPAREN  shift, and go to state 58
     _BOOLOP  shift, and go to state 50
@@ -717,15 +716,15 @@ State 42
 
 State 43
 
-   65 exp: _LPAREN conditional_exp . _RPAREN
+   64 exp: _LPAREN conditional_exp . _RPAREN
 
     _RPAREN  shift, and go to state 59
 
 
 State 44
 
-   53 basic_bool: _NOT _LPAREN . basic_bool _RPAREN
-   54           | _NOT _LPAREN . exp _RPAREN
+   52 basic_bool: _NOT _LPAREN . basic_bool _RPAREN
+   53           | _NOT _LPAREN . exp _RPAREN
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
@@ -746,9 +745,9 @@ State 44
 
 State 45
 
-   59 inc_exp: _INCOP _ID .
+   58 inc_exp: _INCOP _ID .
 
-    $default  reduce using rule 59 (inc_exp)
+    $default  reduce using rule 58 (inc_exp)
 
 
 State 46
@@ -760,7 +759,7 @@ State 46
 
 State 47
 
-   49 num_exp: num_exp _AROP . exp
+   48 num_exp: num_exp _AROP . exp
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
@@ -776,7 +775,7 @@ State 47
 
 State 48
 
-   82 rel_exp: num_exp _RELOP . num_exp
+   81 rel_exp: num_exp _RELOP . num_exp
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
@@ -800,7 +799,7 @@ State 49
 
 State 50
 
-   57 bool_exp: bool_exp _BOOLOP . basic_bool
+   56 bool_exp: bool_exp _BOOLOP . basic_bool
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
@@ -821,7 +820,7 @@ State 50
 
 State 51
 
-   52 basic_bool: exp _BOOLOP . basic_bool
+   51 basic_bool: exp _BOOLOP . basic_bool
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
@@ -872,7 +871,7 @@ State 55
 
 State 56
 
-   72 function_call: _ID $@9 _LPAREN . real_arg_list _RPAREN
+   71 function_call: _ID $@9 _LPAREN . real_arg_list _RPAREN
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
@@ -882,7 +881,7 @@ State 56
     _NOT          shift, and go to state 23
     _INCOP        shift, and go to state 24
 
-    $default  reduce using rule 73 (real_arg_list)
+    $default  reduce using rule 72 (real_arg_list)
 
     num_exp        go to state 72
     basic_bool     go to state 27
@@ -899,33 +898,33 @@ State 56
 
 State 57
 
-   64 exp: _LPAREN num_exp _RPAREN .
+   63 exp: _LPAREN num_exp _RPAREN .
 
-    $default  reduce using rule 64 (exp)
+    $default  reduce using rule 63 (exp)
 
 
 State 58
 
-   55 basic_bool: _LPAREN bool_exp _RPAREN .
-   66 conditional_exp: _LPAREN bool_exp _RPAREN . _QMARK exp_c _DOUBLEDOT exp_c
+   54 basic_bool: _LPAREN bool_exp _RPAREN .
+   65 conditional_exp: _LPAREN bool_exp _RPAREN . _QMARK exp_c _DOUBLEDOT exp_c
 
     _QMARK  shift, and go to state 77
 
-    $default  reduce using rule 55 (basic_bool)
+    $default  reduce using rule 54 (basic_bool)
 
 
 State 59
 
-   65 exp: _LPAREN conditional_exp _RPAREN .
+   64 exp: _LPAREN conditional_exp _RPAREN .
 
-    $default  reduce using rule 65 (exp)
+    $default  reduce using rule 64 (exp)
 
 
 State 60
 
-   55 basic_bool: _LPAREN . bool_exp _RPAREN
-   64 exp: _LPAREN . num_exp _RPAREN
-   65    | _LPAREN . conditional_exp _RPAREN
+   54 basic_bool: _LPAREN . bool_exp _RPAREN
+   63 exp: _LPAREN . num_exp _RPAREN
+   64    | _LPAREN . conditional_exp _RPAREN
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
@@ -948,8 +947,8 @@ State 60
 
 State 61
 
-   49 num_exp: num_exp . _AROP exp
-   82 rel_exp: num_exp . _RELOP num_exp
+   48 num_exp: num_exp . _AROP exp
+   81 rel_exp: num_exp . _RELOP num_exp
 
     _AROP   shift, and go to state 47
     _RELOP  shift, and go to state 48
@@ -957,27 +956,27 @@ State 61
 
 State 62
 
-   53 basic_bool: _NOT _LPAREN basic_bool . _RPAREN
+   52 basic_bool: _NOT _LPAREN basic_bool . _RPAREN
 
     _RPAREN  shift, and go to state 79
 
 
 State 63
 
-   48 num_exp: exp .
-   52 basic_bool: exp . _BOOLOP basic_bool
-   54           | _NOT _LPAREN exp . _RPAREN
+   47 num_exp: exp .
+   51 basic_bool: exp . _BOOLOP basic_bool
+   53           | _NOT _LPAREN exp . _RPAREN
 
     _RPAREN  shift, and go to state 80
     _BOOLOP  shift, and go to state 51
 
-    $default  reduce using rule 48 (num_exp)
+    $default  reduce using rule 47 (num_exp)
 
 
 State 64
 
-   64 exp: _LPAREN . num_exp _RPAREN
-   65    | _LPAREN . conditional_exp _RPAREN
+   63 exp: _LPAREN . num_exp _RPAREN
+   64    | _LPAREN . conditional_exp _RPAREN
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
@@ -995,40 +994,40 @@ State 64
 
 State 65
 
-   49 num_exp: num_exp _AROP exp .
-
-    $default  reduce using rule 49 (num_exp)
-
-
-State 66
-
-   49 num_exp: num_exp . _AROP exp
-   82 rel_exp: num_exp _RELOP num_exp .
-
-    _AROP  shift, and go to state 47
-
-    $default  reduce using rule 82 (rel_exp)
-
-
-State 67
-
-   48 num_exp: exp .
+   48 num_exp: num_exp _AROP exp .
 
     $default  reduce using rule 48 (num_exp)
 
 
+State 66
+
+   48 num_exp: num_exp . _AROP exp
+   81 rel_exp: num_exp _RELOP num_exp .
+
+    _AROP  shift, and go to state 47
+
+    $default  reduce using rule 81 (rel_exp)
+
+
+State 67
+
+   47 num_exp: exp .
+
+    $default  reduce using rule 47 (num_exp)
+
+
 State 68
 
-   57 bool_exp: bool_exp _BOOLOP basic_bool .
+   56 bool_exp: bool_exp _BOOLOP basic_bool .
 
-    $default  reduce using rule 57 (bool_exp)
+    $default  reduce using rule 56 (bool_exp)
 
 
 State 69
 
-   52 basic_bool: exp _BOOLOP basic_bool .
+   51 basic_bool: exp _BOOLOP basic_bool .
 
-    $default  reduce using rule 52 (basic_bool)
+    $default  reduce using rule 51 (basic_bool)
 
 
 State 70
@@ -1049,53 +1048,53 @@ State 71
 
 State 72
 
-   49 num_exp: num_exp . _AROP exp
-   77 argument: num_exp .
-   82 rel_exp: num_exp . _RELOP num_exp
+   48 num_exp: num_exp . _AROP exp
+   76 argument: num_exp .
+   81 rel_exp: num_exp . _RELOP num_exp
 
     _AROP   shift, and go to state 47
     _RELOP  shift, and go to state 48
 
-    $default  reduce using rule 77 (argument)
+    $default  reduce using rule 76 (argument)
 
 
 State 73
 
-   57 bool_exp: bool_exp . _BOOLOP basic_bool
-   78 argument: bool_exp .
+   56 bool_exp: bool_exp . _BOOLOP basic_bool
+   77 argument: bool_exp .
 
     _BOOLOP  shift, and go to state 50
 
-    $default  reduce using rule 78 (argument)
+    $default  reduce using rule 77 (argument)
 
 
 State 74
 
-   72 function_call: _ID $@9 _LPAREN real_arg_list . _RPAREN
+   71 function_call: _ID $@9 _LPAREN real_arg_list . _RPAREN
 
     _RPAREN  shift, and go to state 85
 
 
 State 75
 
-   74 real_arg_list: argument_list .
-   76 argument_list: argument_list . _COMMA argument
+   73 real_arg_list: argument_list .
+   75 argument_list: argument_list . _COMMA argument
 
     _COMMA  shift, and go to state 86
 
-    $default  reduce using rule 74 (real_arg_list)
+    $default  reduce using rule 73 (real_arg_list)
 
 
 State 76
 
-   75 argument_list: argument .
+   74 argument_list: argument .
 
-    $default  reduce using rule 75 (argument_list)
+    $default  reduce using rule 74 (argument_list)
 
 
 State 77
 
-   66 conditional_exp: _LPAREN bool_exp _RPAREN _QMARK . exp_c _DOUBLEDOT exp_c
+   65 conditional_exp: _LPAREN bool_exp _RPAREN _QMARK . exp_c _DOUBLEDOT exp_c
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
@@ -1118,8 +1117,8 @@ State 77
 
 State 78
 
-   55 basic_bool: _LPAREN bool_exp . _RPAREN
-   57 bool_exp: bool_exp . _BOOLOP basic_bool
+   54 basic_bool: _LPAREN bool_exp . _RPAREN
+   56 bool_exp: bool_exp . _BOOLOP basic_bool
 
     _RPAREN  shift, and go to state 90
     _BOOLOP  shift, and go to state 50
@@ -1127,23 +1126,23 @@ State 78
 
 State 79
 
-   53 basic_bool: _NOT _LPAREN basic_bool _RPAREN .
+   52 basic_bool: _NOT _LPAREN basic_bool _RPAREN .
 
-    $default  reduce using rule 53 (basic_bool)
+    $default  reduce using rule 52 (basic_bool)
 
 
 State 80
 
-   54 basic_bool: _NOT _LPAREN exp _RPAREN .
+   53 basic_bool: _NOT _LPAREN exp _RPAREN .
 
-    $default  reduce using rule 54 (basic_bool)
+    $default  reduce using rule 53 (basic_bool)
 
 
 State 81
 
-   64 exp: _LPAREN . num_exp _RPAREN
-   65    | _LPAREN . conditional_exp _RPAREN
-   66 conditional_exp: _LPAREN . bool_exp _RPAREN _QMARK exp_c _DOUBLEDOT exp_c
+   63 exp: _LPAREN . num_exp _RPAREN
+   64    | _LPAREN . conditional_exp _RPAREN
+   65 conditional_exp: _LPAREN . bool_exp _RPAREN _QMARK exp_c _DOUBLEDOT exp_c
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
@@ -1166,8 +1165,8 @@ State 81
 
 State 82
 
-   49 num_exp: num_exp . _AROP exp
-   64 exp: _LPAREN num_exp . _RPAREN
+   48 num_exp: num_exp . _AROP exp
+   63 exp: _LPAREN num_exp . _RPAREN
 
     _RPAREN  shift, and go to state 57
     _AROP    shift, and go to state 47
@@ -1191,14 +1190,14 @@ State 84
 
 State 85
 
-   72 function_call: _ID $@9 _LPAREN real_arg_list _RPAREN .
+   71 function_call: _ID $@9 _LPAREN real_arg_list _RPAREN .
 
-    $default  reduce using rule 72 (function_call)
+    $default  reduce using rule 71 (function_call)
 
 
 State 86
 
-   76 argument_list: argument_list _COMMA . argument
+   75 argument_list: argument_list _COMMA . argument
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
@@ -1221,44 +1220,44 @@ State 86
 
 State 87
 
-   49 num_exp: num_exp . _AROP exp
-   67 exp_c: num_exp .
-   82 rel_exp: num_exp . _RELOP num_exp
+   48 num_exp: num_exp . _AROP exp
+   66 exp_c: num_exp .
+   81 rel_exp: num_exp . _RELOP num_exp
 
     _AROP   shift, and go to state 47
     _RELOP  shift, and go to state 48
 
-    $default  reduce using rule 67 (exp_c)
+    $default  reduce using rule 66 (exp_c)
 
 
 State 88
 
-   57 bool_exp: bool_exp . _BOOLOP basic_bool
-   68 exp_c: bool_exp .
+   56 bool_exp: bool_exp . _BOOLOP basic_bool
+   67 exp_c: bool_exp .
 
     _BOOLOP  shift, and go to state 50
 
-    $default  reduce using rule 68 (exp_c)
+    $default  reduce using rule 67 (exp_c)
 
 
 State 89
 
-   66 conditional_exp: _LPAREN bool_exp _RPAREN _QMARK exp_c . _DOUBLEDOT exp_c
+   65 conditional_exp: _LPAREN bool_exp _RPAREN _QMARK exp_c . _DOUBLEDOT exp_c
 
     _DOUBLEDOT  shift, and go to state 94
 
 
 State 90
 
-   55 basic_bool: _LPAREN bool_exp _RPAREN .
+   54 basic_bool: _LPAREN bool_exp _RPAREN .
 
-    $default  reduce using rule 55 (basic_bool)
+    $default  reduce using rule 54 (basic_bool)
 
 
 State 91
 
-   57 bool_exp: bool_exp . _BOOLOP basic_bool
-   66 conditional_exp: _LPAREN bool_exp . _RPAREN _QMARK exp_c _DOUBLEDOT exp_c
+   56 bool_exp: bool_exp . _BOOLOP basic_bool
+   65 conditional_exp: _LPAREN bool_exp . _RPAREN _QMARK exp_c _DOUBLEDOT exp_c
 
     _RPAREN  shift, and go to state 95
     _BOOLOP  shift, and go to state 50
@@ -1279,14 +1278,14 @@ State 92
 
 State 93
 
-   76 argument_list: argument_list _COMMA argument .
+   75 argument_list: argument_list _COMMA argument .
 
-    $default  reduce using rule 76 (argument_list)
+    $default  reduce using rule 75 (argument_list)
 
 
 State 94
 
-   66 conditional_exp: _LPAREN bool_exp _RPAREN _QMARK exp_c _DOUBLEDOT . exp_c
+   65 conditional_exp: _LPAREN bool_exp _RPAREN _QMARK exp_c _DOUBLEDOT . exp_c
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
@@ -1309,7 +1308,7 @@ State 94
 
 State 95
 
-   66 conditional_exp: _LPAREN bool_exp _RPAREN . _QMARK exp_c _DOUBLEDOT exp_c
+   65 conditional_exp: _LPAREN bool_exp _RPAREN . _QMARK exp_c _DOUBLEDOT exp_c
 
     _QMARK  shift, and go to state 77
 
@@ -1371,9 +1370,9 @@ State 98
 
 State 99
 
-   66 conditional_exp: _LPAREN bool_exp _RPAREN _QMARK exp_c _DOUBLEDOT exp_c .
+   65 conditional_exp: _LPAREN bool_exp _RPAREN _QMARK exp_c _DOUBLEDOT exp_c .
 
-    $default  reduce using rule 66 (conditional_exp)
+    $default  reduce using rule 65 (conditional_exp)
 
 
 State 100
@@ -1387,16 +1386,16 @@ State 100
 
 State 101
 
-   81 if_part: _IF . _LPAREN bool_exp _RPAREN statement
+   80 if_part: _IF . _LPAREN bool_exp _RPAREN statement
 
     _LPAREN  shift, and go to state 119
 
 
 State 102
 
-   83 return_statement: _RETURN . num_exp _SEMICOLON
-   84                 | _RETURN . bool_exp _SEMICOLON
-   85                 | _RETURN . _SEMICOLON
+   82 return_statement: _RETURN . num_exp _SEMICOLON
+   83                 | _RETURN . bool_exp _SEMICOLON
+   84                 | _RETURN . _SEMICOLON
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
@@ -1433,17 +1432,16 @@ State 104
 
 State 105
 
-   46 assignment_statement: _ID . _ASSIGN num_exp _SEMICOLON
-   47                     | _ID . _ASSIGN bool_exp _SEMICOLON
-   58 inc_exp: _ID . _INCOP
-   62 exp: _ID .
-   72 function_call: _ID . $@9 _LPAREN real_arg_list _RPAREN
+   46 assignment_statement: _ID . _ASSIGN exp_statement
+   57 inc_exp: _ID . _INCOP
+   61 exp: _ID .
+   71 function_call: _ID . $@9 _LPAREN real_arg_list _RPAREN
 
     _ASSIGN  shift, and go to state 125
     _INCOP   shift, and go to state 39
 
-    _LPAREN   reduce using rule 71 ($@9)
-    $default  reduce using rule 62 (exp)
+    _LPAREN   reduce using rule 70 ($@9)
+    $default  reduce using rule 61 (exp)
 
     $@9  go to state 40
 
@@ -1515,12 +1513,12 @@ State 114
 
 State 115
 
-   79 if_statement: if_part .
-   80             | if_part . _ELSE statement
+   78 if_statement: if_part .
+   79             | if_part . _ELSE statement
 
     _ELSE  shift, and go to state 127
 
-    $default  reduce using rule 79 (if_statement)
+    $default  reduce using rule 78 (if_statement)
 
 
 State 116
@@ -1551,7 +1549,7 @@ State 118
 
 State 119
 
-   81 if_part: _IF _LPAREN . bool_exp _RPAREN statement
+   80 if_part: _IF _LPAREN . bool_exp _RPAREN statement
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
@@ -1573,16 +1571,16 @@ State 119
 
 State 120
 
-   85 return_statement: _RETURN _SEMICOLON .
+   84 return_statement: _RETURN _SEMICOLON .
 
-    $default  reduce using rule 85 (return_statement)
+    $default  reduce using rule 84 (return_statement)
 
 
 State 121
 
-   49 num_exp: num_exp . _AROP exp
-   82 rel_exp: num_exp . _RELOP num_exp
-   83 return_statement: _RETURN num_exp . _SEMICOLON
+   48 num_exp: num_exp . _AROP exp
+   81 rel_exp: num_exp . _RELOP num_exp
+   82 return_statement: _RETURN num_exp . _SEMICOLON
 
     _SEMICOLON  shift, and go to state 131
     _AROP       shift, and go to state 47
@@ -1591,8 +1589,8 @@ State 121
 
 State 122
 
-   57 bool_exp: bool_exp . _BOOLOP basic_bool
-   84 return_statement: _RETURN bool_exp . _SEMICOLON
+   56 bool_exp: bool_exp . _BOOLOP basic_bool
+   83 return_statement: _RETURN bool_exp . _SEMICOLON
 
     _SEMICOLON  shift, and go to state 132
     _BOOLOP     shift, and go to state 50
@@ -1616,25 +1614,26 @@ State 124
 
 State 125
 
-   46 assignment_statement: _ID _ASSIGN . num_exp _SEMICOLON
-   47                     | _ID _ASSIGN . bool_exp _SEMICOLON
+   46 assignment_statement: _ID _ASSIGN . exp_statement
 
     _ID           shift, and go to state 18
     _INT_NUMBER   shift, and go to state 19
     _UINT_NUMBER  shift, and go to state 20
     _BOOL_VALUE   shift, and go to state 21
-    _LPAREN       shift, and go to state 60
+    _LPAREN       shift, and go to state 22
     _NOT          shift, and go to state 23
     _INCOP        shift, and go to state 24
 
-    num_exp        go to state 135
-    basic_bool     go to state 27
-    bool_exp       go to state 136
-    inc_exp        go to state 29
-    exp            go to state 30
-    literal        go to state 32
-    function_call  go to state 33
-    rel_exp        go to state 34
+    exp_statement    go to state 135
+    num_exp          go to state 26
+    basic_bool       go to state 27
+    bool_exp         go to state 28
+    inc_exp          go to state 29
+    exp              go to state 30
+    conditional_exp  go to state 31
+    literal          go to state 32
+    function_call    go to state 33
+    rel_exp          go to state 34
 
 
 State 126
@@ -1652,7 +1651,7 @@ State 126
     _BOOL_VALUE   shift, and go to state 21
     _LPAREN       shift, and go to state 22
     _LBRACKET     shift, and go to state 106
-    _RBRACKET     shift, and go to state 137
+    _RBRACKET     shift, and go to state 136
     _NOT          shift, and go to state 23
     _INCOP        shift, and go to state 24
 
@@ -1678,7 +1677,7 @@ State 126
 
 State 127
 
-   80 if_statement: if_part _ELSE . statement
+   79 if_statement: if_part _ELSE . statement
 
     _IF           shift, and go to state 101
     _RETURN       shift, and go to state 102
@@ -1693,7 +1692,7 @@ State 127
     _NOT          shift, and go to state 23
     _INCOP        shift, and go to state 24
 
-    statement             go to state 138
+    statement             go to state 137
     branch_statement      go to state 109
     para_statement        go to state 110
     exp_statement         go to state 111
@@ -1717,7 +1716,7 @@ State 128
 
    24 id_list: id_list _COMMA . _ID
 
-    _ID  shift, and go to state 139
+    _ID  shift, and go to state 138
 
 
 State 129
@@ -1729,32 +1728,32 @@ State 129
 
 State 130
 
-   57 bool_exp: bool_exp . _BOOLOP basic_bool
-   81 if_part: _IF _LPAREN bool_exp . _RPAREN statement
+   56 bool_exp: bool_exp . _BOOLOP basic_bool
+   80 if_part: _IF _LPAREN bool_exp . _RPAREN statement
 
-    _RPAREN  shift, and go to state 140
+    _RPAREN  shift, and go to state 139
     _BOOLOP  shift, and go to state 50
 
 
 State 131
 
-   83 return_statement: _RETURN num_exp _SEMICOLON .
+   82 return_statement: _RETURN num_exp _SEMICOLON .
 
-    $default  reduce using rule 83 (return_statement)
+    $default  reduce using rule 82 (return_statement)
 
 
 State 132
 
-   84 return_statement: _RETURN bool_exp _SEMICOLON .
+   83 return_statement: _RETURN bool_exp _SEMICOLON .
 
-    $default  reduce using rule 84 (return_statement)
+    $default  reduce using rule 83 (return_statement)
 
 
 State 133
 
    39 para_statement: _PARA _ID $@7 . _EN _LPAREN literal _DDOT literal paso_part $@8 _RPAREN statement
 
-    _EN  shift, and go to state 141
+    _EN  shift, and go to state 140
 
 
 State 134
@@ -1763,53 +1762,40 @@ State 134
 
     $default  reduce using rule 34 ($@5)
 
-    $@5  go to state 142
+    $@5  go to state 141
 
 
 State 135
 
-   46 assignment_statement: _ID _ASSIGN num_exp . _SEMICOLON
-   49 num_exp: num_exp . _AROP exp
-   82 rel_exp: num_exp . _RELOP num_exp
+   46 assignment_statement: _ID _ASSIGN exp_statement .
 
-    _SEMICOLON  shift, and go to state 143
-    _AROP       shift, and go to state 47
-    _RELOP      shift, and go to state 48
+    $default  reduce using rule 46 (assignment_statement)
 
 
 State 136
-
-   47 assignment_statement: _ID _ASSIGN bool_exp . _SEMICOLON
-   57 bool_exp: bool_exp . _BOOLOP basic_bool
-
-    _SEMICOLON  shift, and go to state 144
-    _BOOLOP     shift, and go to state 50
-
-
-State 137
 
    45 compound_statement: _LBRACKET statement_list _RBRACKET .
 
     $default  reduce using rule 45 (compound_statement)
 
 
+State 137
+
+   79 if_statement: if_part _ELSE statement .
+
+    $default  reduce using rule 79 (if_statement)
+
+
 State 138
-
-   80 if_statement: if_part _ELSE statement .
-
-    $default  reduce using rule 80 (if_statement)
-
-
-State 139
 
    24 id_list: id_list _COMMA _ID .
 
     $default  reduce using rule 24 (id_list)
 
 
-State 140
+State 139
 
-   81 if_part: _IF _LPAREN bool_exp _RPAREN . statement
+   80 if_part: _IF _LPAREN bool_exp _RPAREN . statement
 
     _IF           shift, and go to state 101
     _RETURN       shift, and go to state 102
@@ -1824,7 +1810,7 @@ State 140
     _NOT          shift, and go to state 23
     _INCOP        shift, and go to state 24
 
-    statement             go to state 145
+    statement             go to state 142
     branch_statement      go to state 109
     para_statement        go to state 110
     exp_statement         go to state 111
@@ -1844,54 +1830,64 @@ State 140
     return_statement      go to state 116
 
 
-State 141
+State 140
 
    39 para_statement: _PARA _ID $@7 _EN . _LPAREN literal _DDOT literal paso_part $@8 _RPAREN statement
 
-    _LPAREN  shift, and go to state 146
+    _LPAREN  shift, and go to state 143
+
+
+State 141
+
+   36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 . _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET $@6 _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement
+
+    _RARROW  shift, and go to state 144
 
 
 State 142
 
-   36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 . _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET $@6 _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement
+   80 if_part: _IF _LPAREN bool_exp _RPAREN statement .
 
-    _RARROW  shift, and go to state 147
+    $default  reduce using rule 80 (if_part)
 
 
 State 143
-
-   46 assignment_statement: _ID _ASSIGN num_exp _SEMICOLON .
-
-    $default  reduce using rule 46 (assignment_statement)
-
-
-State 144
-
-   47 assignment_statement: _ID _ASSIGN bool_exp _SEMICOLON .
-
-    $default  reduce using rule 47 (assignment_statement)
-
-
-State 145
-
-   81 if_part: _IF _LPAREN bool_exp _RPAREN statement .
-
-    $default  reduce using rule 81 (if_part)
-
-
-State 146
 
    39 para_statement: _PARA _ID $@7 _EN _LPAREN . literal _DDOT literal paso_part $@8 _RPAREN statement
 
     _INT_NUMBER   shift, and go to state 19
     _UINT_NUMBER  shift, and go to state 20
 
-    literal  go to state 148
+    literal  go to state 145
+
+
+State 144
+
+   36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW . literal _RARROW literal _RARROW literal _RSQRBRACKET $@6 _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement
+
+    _INT_NUMBER   shift, and go to state 19
+    _UINT_NUMBER  shift, and go to state 20
+
+    literal  go to state 146
+
+
+State 145
+
+   39 para_statement: _PARA _ID $@7 _EN _LPAREN literal . _DDOT literal paso_part $@8 _RPAREN statement
+
+    _DDOT  shift, and go to state 147
+
+
+State 146
+
+   36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal . _RARROW literal _RARROW literal _RSQRBRACKET $@6 _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement
+
+    _RARROW  shift, and go to state 148
 
 
 State 147
 
-   36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW . literal _RARROW literal _RARROW literal _RSQRBRACKET $@6 _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement
+   39 para_statement: _PARA _ID $@7 _EN _LPAREN literal _DDOT . literal paso_part $@8 _RPAREN statement
 
     _INT_NUMBER   shift, and go to state 19
     _UINT_NUMBER  shift, and go to state 20
@@ -1901,109 +1897,145 @@ State 147
 
 State 148
 
-   39 para_statement: _PARA _ID $@7 _EN _LPAREN literal . _DDOT literal paso_part $@8 _RPAREN statement
-
-    _DDOT  shift, and go to state 150
-
-
-State 149
-
-   36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal . _RARROW literal _RARROW literal _RSQRBRACKET $@6 _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement
-
-    _RARROW  shift, and go to state 151
-
-
-State 150
-
-   39 para_statement: _PARA _ID $@7 _EN _LPAREN literal _DDOT . literal paso_part $@8 _RPAREN statement
-
-    _INT_NUMBER   shift, and go to state 19
-    _UINT_NUMBER  shift, and go to state 20
-
-    literal  go to state 152
-
-
-State 151
-
    36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW . literal _RARROW literal _RSQRBRACKET $@6 _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement
 
     _INT_NUMBER   shift, and go to state 19
     _UINT_NUMBER  shift, and go to state 20
 
-    literal  go to state 153
+    literal  go to state 150
 
 
-State 152
+State 149
 
    39 para_statement: _PARA _ID $@7 _EN _LPAREN literal _DDOT literal . paso_part $@8 _RPAREN statement
 
-    _PASO  shift, and go to state 154
+    _PASO  shift, and go to state 151
 
     $default  reduce using rule 40 (paso_part)
 
-    paso_part  go to state 155
+    paso_part  go to state 152
 
 
-State 153
+State 150
 
    36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal . _RARROW literal _RSQRBRACKET $@6 _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement
 
-    _RARROW  shift, and go to state 156
+    _RARROW  shift, and go to state 153
 
 
-State 154
+State 151
 
    41 paso_part: _PASO . literal
 
     _INT_NUMBER   shift, and go to state 19
     _UINT_NUMBER  shift, and go to state 20
 
-    literal  go to state 157
+    literal  go to state 154
 
 
-State 155
+State 152
 
    39 para_statement: _PARA _ID $@7 _EN _LPAREN literal _DDOT literal paso_part . $@8 _RPAREN statement
 
     $default  reduce using rule 38 ($@8)
 
-    $@8  go to state 158
+    $@8  go to state 155
 
 
-State 156
+State 153
 
    36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW . literal _RSQRBRACKET $@6 _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement
 
     _INT_NUMBER   shift, and go to state 19
     _UINT_NUMBER  shift, and go to state 20
 
-    literal  go to state 159
+    literal  go to state 156
 
 
-State 157
+State 154
 
    41 paso_part: _PASO literal .
 
     $default  reduce using rule 41 (paso_part)
 
 
-State 158
+State 155
 
    39 para_statement: _PARA _ID $@7 _EN _LPAREN literal _DDOT literal paso_part $@8 . _RPAREN statement
 
-    _RPAREN  shift, and go to state 160
+    _RPAREN  shift, and go to state 157
+
+
+State 156
+
+   36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW literal . _RSQRBRACKET $@6 _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement
+
+    _RSQRBRACKET  shift, and go to state 158
+
+
+State 157
+
+   39 para_statement: _PARA _ID $@7 _EN _LPAREN literal _DDOT literal paso_part $@8 _RPAREN . statement
+
+    _IF           shift, and go to state 101
+    _RETURN       shift, and go to state 102
+    _PARA         shift, and go to state 103
+    _BRANCH       shift, and go to state 104
+    _ID           shift, and go to state 105
+    _INT_NUMBER   shift, and go to state 19
+    _UINT_NUMBER  shift, and go to state 20
+    _BOOL_VALUE   shift, and go to state 21
+    _LPAREN       shift, and go to state 22
+    _LBRACKET     shift, and go to state 106
+    _NOT          shift, and go to state 23
+    _INCOP        shift, and go to state 24
+
+    statement             go to state 159
+    branch_statement      go to state 109
+    para_statement        go to state 110
+    exp_statement         go to state 111
+    compound_statement    go to state 112
+    assignment_statement  go to state 113
+    num_exp               go to state 26
+    basic_bool            go to state 27
+    bool_exp              go to state 28
+    inc_exp               go to state 29
+    exp                   go to state 30
+    conditional_exp       go to state 31
+    literal               go to state 32
+    function_call         go to state 33
+    if_statement          go to state 114
+    if_part               go to state 115
+    rel_exp               go to state 34
+    return_statement      go to state 116
+
+
+State 158
+
+   36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET . $@6 _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement
+
+    $default  reduce using rule 35 ($@6)
+
+    $@6  go to state 160
 
 
 State 159
 
-   36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW literal . _RSQRBRACKET $@6 _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement
+   39 para_statement: _PARA _ID $@7 _EN _LPAREN literal _DDOT literal paso_part $@8 _RPAREN statement .
 
-    _RSQRBRACKET  shift, and go to state 161
+    $default  reduce using rule 39 (para_statement)
 
 
 State 160
 
-   39 para_statement: _PARA _ID $@7 _EN _LPAREN literal _DDOT literal paso_part $@8 _RPAREN . statement
+   36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET $@6 . _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement
+
+    _FIRST  shift, and go to state 161
+
+
+State 161
+
+   36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET $@6 _FIRST . statement _SECOND statement _THIRD statement _OTHERWISE statement
 
     _IF           shift, and go to state 101
     _RETURN       shift, and go to state 102
@@ -2038,74 +2070,14 @@ State 160
     return_statement      go to state 116
 
 
-State 161
-
-   36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET . $@6 _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement
-
-    $default  reduce using rule 35 ($@6)
-
-    $@6  go to state 163
-
-
 State 162
-
-   39 para_statement: _PARA _ID $@7 _EN _LPAREN literal _DDOT literal paso_part $@8 _RPAREN statement .
-
-    $default  reduce using rule 39 (para_statement)
-
-
-State 163
-
-   36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET $@6 . _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement
-
-    _FIRST  shift, and go to state 164
-
-
-State 164
-
-   36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET $@6 _FIRST . statement _SECOND statement _THIRD statement _OTHERWISE statement
-
-    _IF           shift, and go to state 101
-    _RETURN       shift, and go to state 102
-    _PARA         shift, and go to state 103
-    _BRANCH       shift, and go to state 104
-    _ID           shift, and go to state 105
-    _INT_NUMBER   shift, and go to state 19
-    _UINT_NUMBER  shift, and go to state 20
-    _BOOL_VALUE   shift, and go to state 21
-    _LPAREN       shift, and go to state 22
-    _LBRACKET     shift, and go to state 106
-    _NOT          shift, and go to state 23
-    _INCOP        shift, and go to state 24
-
-    statement             go to state 165
-    branch_statement      go to state 109
-    para_statement        go to state 110
-    exp_statement         go to state 111
-    compound_statement    go to state 112
-    assignment_statement  go to state 113
-    num_exp               go to state 26
-    basic_bool            go to state 27
-    bool_exp              go to state 28
-    inc_exp               go to state 29
-    exp                   go to state 30
-    conditional_exp       go to state 31
-    literal               go to state 32
-    function_call         go to state 33
-    if_statement          go to state 114
-    if_part               go to state 115
-    rel_exp               go to state 34
-    return_statement      go to state 116
-
-
-State 165
 
    36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET $@6 _FIRST statement . _SECOND statement _THIRD statement _OTHERWISE statement
 
-    _SECOND  shift, and go to state 166
+    _SECOND  shift, and go to state 163
 
 
-State 166
+State 163
 
    36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET $@6 _FIRST statement _SECOND . statement _THIRD statement _OTHERWISE statement
 
@@ -2122,7 +2094,7 @@ State 166
     _NOT          shift, and go to state 23
     _INCOP        shift, and go to state 24
 
-    statement             go to state 167
+    statement             go to state 164
     branch_statement      go to state 109
     para_statement        go to state 110
     exp_statement         go to state 111
@@ -2142,14 +2114,14 @@ State 166
     return_statement      go to state 116
 
 
-State 167
+State 164
 
    36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET $@6 _FIRST statement _SECOND statement . _THIRD statement _OTHERWISE statement
 
-    _THIRD  shift, and go to state 168
+    _THIRD  shift, and go to state 165
 
 
-State 168
+State 165
 
    36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET $@6 _FIRST statement _SECOND statement _THIRD . statement _OTHERWISE statement
 
@@ -2166,7 +2138,7 @@ State 168
     _NOT          shift, and go to state 23
     _INCOP        shift, and go to state 24
 
-    statement             go to state 169
+    statement             go to state 166
     branch_statement      go to state 109
     para_statement        go to state 110
     exp_statement         go to state 111
@@ -2186,14 +2158,14 @@ State 168
     return_statement      go to state 116
 
 
-State 169
+State 166
 
    36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET $@6 _FIRST statement _SECOND statement _THIRD statement . _OTHERWISE statement
 
-    _OTHERWISE  shift, and go to state 170
+    _OTHERWISE  shift, and go to state 167
 
 
-State 170
+State 167
 
    36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET $@6 _FIRST statement _SECOND statement _THIRD statement _OTHERWISE . statement
 
@@ -2210,7 +2182,7 @@ State 170
     _NOT          shift, and go to state 23
     _INCOP        shift, and go to state 24
 
-    statement             go to state 171
+    statement             go to state 168
     branch_statement      go to state 109
     para_statement        go to state 110
     exp_statement         go to state 111
@@ -2230,7 +2202,7 @@ State 170
     return_statement      go to state 116
 
 
-State 171
+State 168
 
    36 branch_statement: _BRANCH _LSQRBRACKET _ID $@5 _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET $@6 _FIRST statement _SECOND statement _THIRD statement _OTHERWISE statement .
 
