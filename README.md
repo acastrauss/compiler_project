@@ -15,4 +15,14 @@ NOTE: Popravi za fju sa vise parametara da se ne prepuni tabela
 
 15.12.2020. 09:22 Dodate sve definicije i headeri za generisanje koda, prepisi kod u .y fajl
 
-3.1.2021. 19:10 Popravio resenje za vise parametara, da radi dinamicki
+3.1.2021. 
+    19:10 Popravio resenje za vise parametara, da radi dinamicki
+    
+4.1.2021.
+    00:14 Zavrsi branch statement
+
+    Konvencije: 
+    %0 za dodelu
+    %1 za literale
+    %2 tip literala
+    %3 za promenljive

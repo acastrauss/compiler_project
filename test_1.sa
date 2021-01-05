@@ -6,3 +6,26 @@ int main() {
     b = 3 - ++a;
     return 0;
 }
+
+main:
+    push %14
+    mov %15, %14
+
+    subs %15, 8, %15  # deklaracija a,b
+    
+    adds -8(%14), $1, %0  # b++
+    subs %0, $1, %0       # jer je povratna vrednost b++ == b
+    adds %0, $2, %0       # %0 + 2
+    subs %0, $5, %0       # %0 - 5
+    mov  %0, -4(%14)      # a = %0
+
+    adds -4(%14), $1, %0  # ++a
+    subs $3, %0, %0       # 3 - %0
+    mov  %0, -8(%14)      # b = %0
+
+    mov  $0, %13          # return 0
+
+@main_exit:
+    mov %14, %15
+    pop %14
+    ret 

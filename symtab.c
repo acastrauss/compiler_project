@@ -168,18 +168,9 @@ void clear_symbols(unsigned begin_index) {
     
     if(symbol_table[i].atr2) 
     { 
-      /*
-      for (int j = 0; j < MAX_ATR2; j++)
-      {
-        symbol_table[i].atr2->atr2[j] = NO_TYPE;
-      }
-      symbol_table[i].atr2->occupied = 0;
-      */
       free(symbol_table[i].atr2);
     }
     symbol_table[i].atr2 = 0;
-    
-    //symbol_table[i].atr2 = NO_TYPE;
   }
   first_empty = begin_index;
 }

@@ -635,8 +635,8 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "semantic.l"
-#line 4 "semantic.l"
+#line 1 "micko.l"
+#line 4 "micko.l"
    #include <string.h>
    #include "semantic.tab.h"
    #include "defs.h"
@@ -859,7 +859,7 @@ YY_DECL
 		}
 
 	{
-#line 10 "semantic.l"
+#line 10 "micko.l"
 
 
 #line 866 "lex.yy.c"
@@ -932,235 +932,235 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 12 "semantic.l"
+#line 12 "micko.l"
 { /* skip */ }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 14 "semantic.l"
+#line 14 "micko.l"
 { return _IF; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 15 "semantic.l"
+#line 15 "micko.l"
 { return _ELSE; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 16 "semantic.l"
+#line 16 "micko.l"
 { return _RETURN; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 18 "semantic.l"
+#line 18 "micko.l"
 { yylval.i = INT;  return _TYPE; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 19 "semantic.l"
+#line 19 "micko.l"
 { yylval.i = UINT; return _TYPE; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 20 "semantic.l"
+#line 20 "micko.l"
 { yylval.i = BOOL; return _TYPE; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 21 "semantic.l"
+#line 21 "micko.l"
 { yylval.i = VOID; return _TYPE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 23 "semantic.l"
+#line 23 "micko.l"
 { return _PARA; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 24 "semantic.l"
+#line 24 "micko.l"
 { return _EN; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 25 "semantic.l"
+#line 25 "micko.l"
 { return _DDOT; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 26 "semantic.l"
+#line 26 "micko.l"
 { return _PASO; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 28 "semantic.l"
+#line 28 "micko.l"
 { return _BRANCH; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 29 "semantic.l"
+#line 29 "micko.l"
 { return _FIRST; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 30 "semantic.l"
+#line 30 "micko.l"
 { return _SECOND; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 31 "semantic.l"
+#line 31 "micko.l"
 { return _THIRD; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 32 "semantic.l"
+#line 32 "micko.l"
 { return _OTHERWISE; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 34 "semantic.l"
+#line 34 "micko.l"
 { yylval.s = strdup(yytext);
                           return _BOOL_VALUE; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 37 "semantic.l"
+#line 37 "micko.l"
 { return _LPAREN; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 38 "semantic.l"
+#line 38 "micko.l"
 { return _RPAREN; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 39 "semantic.l"
+#line 39 "micko.l"
 { return _LBRACKET; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 40 "semantic.l"
+#line 40 "micko.l"
 { return _RBRACKET; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 41 "semantic.l"
+#line 41 "micko.l"
 { return _LSQRBRACKET; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 42 "semantic.l"
+#line 42 "micko.l"
 { return _RSQRBRACKET; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 43 "semantic.l"
+#line 43 "micko.l"
 { return _SEMICOLON; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 44 "semantic.l"
+#line 44 "micko.l"
 { return _ASSIGN; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 45 "semantic.l"
+#line 45 "micko.l"
 { return _COMMA; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 46 "semantic.l"
+#line 46 "micko.l"
 { return _RARROW; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 47 "semantic.l"
+#line 47 "micko.l"
 { return _QMARK; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 48 "semantic.l"
+#line 48 "micko.l"
 { return _DOUBLEDOT; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 50 "semantic.l"
+#line 50 "micko.l"
 { yylval.i = ADD; return _AROP; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 51 "semantic.l"
+#line 51 "micko.l"
 { yylval.i = SUB; return _AROP; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 53 "semantic.l"
+#line 53 "micko.l"
 { return _INCOP; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 55 "semantic.l"
+#line 55 "micko.l"
 { yylval.i = AND; return _BOOLOP; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 56 "semantic.l"
+#line 56 "micko.l"
 { yylval.i = OR; return _BOOLOP; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 57 "semantic.l"
+#line 57 "micko.l"
 { return _NOT; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 58 "semantic.l"
+#line 58 "micko.l"
 { yylval.i = XOR; return _BOOLOP; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 60 "semantic.l"
+#line 60 "micko.l"
 { yylval.i = LT; return _RELOP; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 61 "semantic.l"
+#line 61 "micko.l"
 { yylval.i = GT; return _RELOP; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 62 "semantic.l"
+#line 62 "micko.l"
 { yylval.i = LE; return _RELOP; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 63 "semantic.l"
+#line 63 "micko.l"
 { yylval.i = GE; return _RELOP; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 64 "semantic.l"
+#line 64 "micko.l"
 { yylval.i = EQ; return _RELOP; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 65 "semantic.l"
+#line 65 "micko.l"
 { yylval.i = NE; return _RELOP; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 67 "semantic.l"
+#line 67 "micko.l"
 { yylval.s = strdup(yytext);
                           return _ID; } // identifikator
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 70 "semantic.l"
+#line 70 "micko.l"
 { yylval.s = strdup(yytext); 
                                                          return _INT_NUMBER;}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 73 "semantic.l"
+#line 73 "micko.l"
 { yylval.s = strdup(yytext); 
                        yylval.s[yyleng-1] = 0;
                        return _UINT_NUMBER;}
@@ -1168,17 +1168,17 @@ YY_RULE_SETUP
 case 47:
 /* rule 47 can match eol */
 YY_RULE_SETUP
-#line 77 "semantic.l"
+#line 77 "micko.l"
 { /* SKIP */ } // komentari
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 79 "semantic.l"
+#line 79 "micko.l"
 { printf("line %d: LEXICAL ERROR on char %c\n", yylineno, *yytext);}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 81 "semantic.l"
+#line 81 "micko.l"
 ECHO;
 	YY_BREAK
 #line 1185 "lex.yy.c"
@@ -2198,6 +2198,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 81 "semantic.l"
+#line 81 "micko.l"
 
 
