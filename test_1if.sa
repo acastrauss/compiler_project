@@ -1,0 +1,18 @@
+//OPIS: if-else
+// RETURN: 5
+int main() {
+    
+    int b;
+    unsigned c = 3u;
+    unsigned a = 5u;
+
+    if(a < c) 
+    {
+        b = 5;
+    }
+    else 
+    {
+        b = -5;
+    }
+    return b;
+}

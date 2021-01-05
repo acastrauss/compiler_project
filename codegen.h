@@ -22,4 +22,6 @@ void gen_mov(int input_index, int output_index);
 // generates global variable
 void gen_glbvar(int indx);
 
+int numexp_to_bool(int index);
+
 #endif

@@ -1,0 +1,24 @@
+//OPIS: definicija vise promenljivih
+// RETURN: 5
+int main() {
+    int a,b = 5;
+    return a;
+}
+
+/*
+main:
+    push %14
+    mov %15, %14
+
+    subs %15, 4, %15
+
+    mov  $5, -4(%14)       # a = 5
+    mov  $5, -8(%14)       # b = 5
+
+    mov  -8(%14), %13          # return 0
+
+@main_exit:
+    mov %14, %15
+    pop %14
+    ret 
+*/

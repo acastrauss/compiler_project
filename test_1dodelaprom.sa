@@ -1,0 +1,9 @@
+//OPIS: Dodela promenljivoj
+// RETURN: 6
+bool main() {
+    bool a;
+    int b,c = 6;
+    a = true;
+    c = 7;
+    return a;
+}

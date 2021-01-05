@@ -37,14 +37,40 @@ void free_if_reg(int reg_index) {
 // SYMBOL
 void gen_sym_name(int index) {
   if(index > -1) {
-    if(get_kind(index) == VAR) // -n*4(%14)
-      code("-%d(%%14)", get_atr1(index) * 4);
+    if(get_kind(index) == VAR) // -n*4(%14) 
+    {
+      int size = (get_type(index) == BOOL) ? 1 : 4; 
+      code("-%d(%%14)", get_atr1(index) * size);
+    }
     else 
-      if(get_kind(index) == PAR) // m*4(%14)
-        code("%d(%%14)", 4 + get_atr1(index) *4);
+      if(get_kind(index) == PAR) // m*4(%14) 
+      {
+        int size = (get_type(index) == BOOL) ? 1 : 4; 
+        code("%d(%%14)", 4 + get_atr1(index) *size);
+      }
       else
-        if(get_kind(index) == LIT)
-          code("$%s", get_name(index));
+        if(get_kind(index) == LIT) 
+        {
+          char* name = get_name(index);
+
+          int lit = 0;
+
+          if (strcmp(name, "true") == 0) 
+          {
+            lit = 1;
+          }
+          else if(strcmp(name, "false") == 0) 
+          {
+            lit = 0;
+          }
+          else
+          {
+            lit = atoi(name);
+          }
+
+          code("$%d", lit);
+        
+        }
         else //function, reg, moze i globalna
           code("%s", get_name(index));
   }
@@ -79,5 +105,19 @@ void gen_mov(int input_index, int output_index) {
 void gen_glbvar(int indx) 
 {
   code("\n%s:", get_name(indx));
-  code("\n\tWORD\t1"); // dodati drugi broj ako zauizimam niz, ili promeni word ako zauzimam bool
+  if (get_type(indx)) 
+  {
+    code("\n\tBYTE\t1");     
+  }
+  else 
+  {
+    code("\n\tWORD\t1");
+  }
+}
+
+int numexp_to_bool(int index) 
+{
+  int reg = take_reg(); // take reg
+  gen_mov(index, reg); // prebaci se vrednost u taj registar
+  return reg; // i vrati redni broj zauzetog registra
 }

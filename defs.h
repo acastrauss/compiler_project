@@ -36,12 +36,14 @@ enum arops { ADD, SUB, MUL, DIV, AROP_NUMBER };
 static char *ar_instructions[] = { "ADDS", "SUBS", "MULS", "DIVS",
                                    "ADDU", "SUBU", "MULU", "DIVU" };
 
+
 //konstante inc i dec operatora
 enum incops { INC };
 
-
 // konstantne bool operator
-enum boolops { AND, OR, XOR };
+enum boolops { AND, OR, XOR, BOOLOP_NUMBER };
+
+static char *bool_instructions[] = { "AND", "OR ", "XOR" };
 
 //konstante relacionih operatora
 enum relops { LT, GT, LE, GE, EQ, NE, RELOP_NUMBER };
