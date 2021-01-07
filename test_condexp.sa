@@ -1,9 +1,9 @@
 //OPIS: Conditional expression tacno
-
+// REZULTAT: 8
 int main() 
 {
     int a = 5;
-    int b = ( a > 3 ) ? a + b : b + 5;
+    int b = ( a > 3 ) ? a + 3 : a + 5;
 
-    return 0;
+    return b;
 }

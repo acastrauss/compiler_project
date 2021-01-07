@@ -5,6 +5,7 @@
 #define TRUE  1
 #define FALSE 0
 
+int a, b = 5;
 
 int main() 
 {

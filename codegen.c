@@ -105,7 +105,7 @@ void gen_mov(int input_index, int output_index) {
 void gen_glbvar(int indx) 
 {
   code("\n%s:", get_name(indx));
-  if (get_type(indx)) 
+  if (get_type(indx) == BOOL) 
   {
     code("\n\tBYTE\t1");     
   }

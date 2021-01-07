@@ -11,6 +11,56 @@
 SYMBOL_ENTRY symbol_table[SYMBOL_TABLE_LENGTH];
 int first_empty = 0;
 
+GLB_IDS* create_glbids() 
+{
+  GLB_IDS* glb_idsp = (GLB_IDS*)malloc(sizeof(GLB_IDS));
+
+  if (glb_idsp == NULL) exit(55);
+
+  glb_idsp->occupied = 0;
+  for (int i = 0; i < MAX_ATR2; i++)
+  {
+    glb_idsp->ids[i] = (char*)malloc(MAX_ID_LENGTH); // string od 200 karaktera
+    if (glb_idsp->ids[i] == NULL) exit(55);
+    //glb_idsp->ids[i] = 0;
+  }
+
+  return glb_idsp;
+}
+
+void add_id(char* id, int id_len, GLB_IDS* glb_idsp) 
+{
+  int indx = glb_idsp->occupied++;
+  
+  if (indx > 63) exit(77);
+  if (id_len > MAX_ID_LENGTH) exit(88);
+
+  for (int i = 0 ; i < id_len; i++) 
+  {
+    glb_idsp->ids[indx][i] = id[i];
+  }
+  glb_idsp->ids[indx][id_len] = 0;
+}
+
+void free_glb_ids(GLB_IDS* glb_idsp) 
+{
+ for (int i = 0; i < MAX_ATR2; i++)
+  {
+    if(glb_idsp->ids[i])
+    {
+      //free(glb_idsp->ids[i]);
+      glb_idsp->ids[i] = 0;
+    }
+  }
+  glb_idsp->occupied = 0;
+
+  if(glb_idsp) 
+  {
+    glb_idsp = 0;
+    free(glb_idsp); 
+  }
+}
+
 ATR2* create_atr2() 
 {
   ATR2* atr2p = (ATR2*)malloc(sizeof(ATR2));

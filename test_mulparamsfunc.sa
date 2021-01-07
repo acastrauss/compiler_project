@@ -1,43 +1,43 @@
 // OPIS: Fje sa mnogo parametara koje pokazuju da se tabela nece prepuniti zbog njih
-
+// REZULTAT: 0
 int f1(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas) 
 {
-
+    return 0;
 }
 
 int f2(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas) 
 {
-    
+    return 0;
 }
 
 int f3(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas)  
 {
-    
+    return 0;   
 }
 
 int f4(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas)  
 {
-    
+    return 0;    
 }
 
 int f5(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas)  
 {
-    
+    return 0;    
 }
 
 int f6(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas)  
 {
-    
+    return 0;    
 }
 
 int f7(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas) 
 {
-    
+    return 0;    
 }
 
 int f8(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas) 
 {
-    
+    return 0;   
 }
 
 //(int a, unsigned b, bool c, int aa, unsigned bb, bool cc, int dd, bool ee, unsigned rr, int asdas)

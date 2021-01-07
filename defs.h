@@ -12,6 +12,7 @@
 #define FUN_REG               13
 #define CHAR_BUFFER_LENGTH   128
 #define MAX_ATR2 SYMBOL_TABLE_LENGTH - 1
+#define MAX_ID_LENGTH        200
 extern char char_buffer[CHAR_BUFFER_LENGTH];
 
 extern int out_lin;

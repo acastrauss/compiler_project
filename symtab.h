@@ -3,6 +3,16 @@
 #define SYMTAB_H
 
 
+typedef struct glb_ids 
+{
+   unsigned occupied;
+   char* ids[MAX_ATR2]; // 63 glob prom i main fja da bi stalo u tabelu simbola
+} GLB_IDS;
+
+GLB_IDS* create_glbids();
+void add_id(char* id, int id_len, GLB_IDS* glb_idsp);
+void free_glb_ids(GLB_IDS* glb_idsp);
+
 typedef struct atr2_str
 {
    unsigned occupied; // broj zauzetih clanova niza 

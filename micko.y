@@ -1,6 +1,7 @@
 %{
   #include <stdio.h>
   #include <stdlib.h>
+  #include <string.h>
   #include "defs.h"
   #include "symtab.h"
   #include "codegen.h"
@@ -32,6 +33,7 @@
   FILE *output;
 
   int glb_num = 0; // num of global vars
+  int glb_before = 0;
 
   int var_num_before_id_list = 0;
 
@@ -40,12 +42,14 @@
   int cond_exp_label = 0;
 
   unsigned glb_type = 0;
-  int glb_used = 1;
-
+  
   ATR2* atr2_fcall = NULL; // za pozive fja
   ATR2* atr2_res = NULL; // ukoliko ima ugnjezdenih
 
   int para_label = -1;
+  int branch_label = -1;
+
+  GLB_IDS* glb_idsp = NULL;
 %}
 
 %union {
@@ -109,14 +113,14 @@
 
 program
   :
-  glb_var_list
   {
-    glb_used = 0;
-
     // mora ovde inicijalizacija 
     atr2_res = create_atr2();
     atr2_fcall = create_atr2();
+    glb_idsp = create_glbids();
+
   }
+  glb_var_list
   function_list
   {  
     if(lookup_symbol("main", FUN) == NO_INDEX)
@@ -124,13 +128,35 @@ program
   }
   ;
 
-glb_var_list
-  : 
+glb_var_list 
+  :
   | glb_var_list glb_var
   ;
 
 glb_var
-  : _GLOBAL variable
+  : 
+  _TYPE glb_id_list opt_assign 
+  {
+    glb_before = glb_num; // u proslom prolazu, na pocetku 0
+    glb_num = glb_idsp->occupied;
+
+    for (int i = glb_before; i < glb_num; i++) 
+    {
+      gen_glbvar(insert_symbol(glb_idsp->ids[i], GLB, $1, i, create_atr2()));
+    }
+    //print_symtab();
+  }
+  ;
+
+glb_id_list
+  : _ID 
+  { 
+    add_id($1, strlen($1), glb_idsp);  
+  }
+  | glb_id_list _COMMA _ID 
+  { 
+    add_id($3, strlen($3), glb_idsp);
+  }
   ;
 
 function_list
@@ -226,48 +252,41 @@ variable_list
 
 variable
   : _TYPE 
-    {
-      if ($1 == VOID)
-        err("variable can not be void.");
+  {
+    if ($1 == VOID)
+      err("variable can not be void.");
 
-      id_type = $1;
-      glb_type = $1;
-  
-      var_num_before_id_list = var_num;
-    }
+    id_type = $1;
+
+    var_num_before_id_list = var_num;
+  }
   id_list opt_assign
+  {
+    if ((get_type($4) != $1) && ($4 != -1))
     {
-      if ((get_type($4) != $1) && ($4 != -1))
+      err("incompatible types in assignment.");
+    }
+    
+    int nod = var_num - var_num_before_id_list; // broj definisanih
+
+    int size = ($1 == BOOL) ? 1 : 4; // jer je ili bool pa 1 byte ili int/uint pa 4 byte-a
+
+    if (nod) 
+    {
+      code("\n\t\tSUBS\t%%15,$%d,%%15", size*nod); // za broj definisanih 
+    }
+
+    if ($4 != -1)
+    { // ako su definisane promenljive
+      for (int i = 1; i < nod + 1; i++) 
       {
-        err("incompatible types in assignment.");
-      }
-      
-      if(!glb_used)
-      {
-        int nod = var_num - var_num_before_id_list; // broj definisanih
-
-        int size = ($1 == BOOL) ? 1 : 4; // jer je ili bool pa 1 byte ili int/uint pa 4 byte-a
-
-        if (nod) 
-        {
-          code("\n\t\tSUBS\t%%15,$%d,%%15", size*nod); // za broj definisanih 
-        }
-
-        if ($4 != -1)
-        { // ako su definisane proemnljive
-          for (int i = 1; i < nod + 1; i++) 
-          {
-            code("\n\t\tMOV ");
-            gen_sym_name($4);
-            code(",-%d(%%14)", (var_num_before_id_list + i) * size);
-          }
-        }
-      }
-      else 
-      {
-
+        code("\n\t\tMOV ");
+        gen_sym_name($4);
+        code(",-%d(%%14)", (var_num_before_id_list + i) * size);
       }
     }
+  
+  }
   ;
 
 opt_assign
@@ -277,39 +296,19 @@ opt_assign
 
 id_list
   : _ID
-      {
-        if(glb_used) 
-        {
-          if(lookup_symbol($1, GLB) == NO_INDEX)
-            gen_glbvar(insert_symbol($1, GLB, glb_type, ++glb_num, create_atr2()));
-          else 
-           err("redefinition of '%s'", $1);
-        }
-        else 
-        {
-          if(lookup_symbol($1, VAR|PAR) == NO_INDEX)
-           insert_symbol($1, VAR, id_type, ++var_num, create_atr2());
-          else 
-           err("redefinition of '%s'", $1);
-        }
-      }
+  {
+    if(lookup_symbol($1, VAR|PAR) == NO_INDEX)
+      insert_symbol($1, VAR, id_type, ++var_num, create_atr2());
+    else 
+      err("redefinition of '%s'", $1);    
+  }
   | id_list _COMMA _ID
-      {
-        if (glb_used) 
-        {
-          if(lookup_symbol($3, GLB) == NO_INDEX)
-            gen_glbvar(insert_symbol($3, GLB, glb_type, ++glb_num, create_atr2()));
-          else 
-            err("redefinition of '%s'", $3);
-        }
-        else 
-        {
-          if(lookup_symbol($3, VAR|PAR) == NO_INDEX)
-            insert_symbol($3, VAR, id_type, ++var_num, create_atr2());
-          else 
-            err("redefinition of '%s'", $3); 
-        }
-      }
+  {
+    if(lookup_symbol($3, VAR|PAR) == NO_INDEX)
+      insert_symbol($3, VAR, id_type, ++var_num, create_atr2());
+    else 
+      err("redefinition of '%s'", $3); 
+  }
   ;
 
 statement_list
@@ -328,28 +327,70 @@ statement
   ;
 
 branch_statement
-  : _BRANCH _LSQRBRACKET _ID
-      {
-        if((indx_branch = lookup_symbol($3, VAR|PAR|GLB)) == NO_INDEX)
-          err("undefined '%s' in branch statement\n", $3);
-      }
-    _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET
-    {
-      int id_type = get_type(indx_branch);
+  : _BRANCH
+  {
+    code("\nbranch_%d:", ++branch_label);
+  } 
+  _LSQRBRACKET _ID
+  {
+    if((indx_branch = lookup_symbol($4, VAR|PAR|GLB)) == NO_INDEX)
+      err("undefined '%s' in branch statement\n", $4);
+  }
+  _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET
+  {
+    int id_type = get_type(indx_branch);
 
-      if (
-        id_type != get_type($6) ||
-        id_type != get_type($8) ||
-        id_type != get_type($10)  
-      )
-        err("incompatible types in branch statement.\n");
-    }
-    _FIRST statement
-    _SECOND statement
-    _THIRD statement
-    _OTHERWISE statement
+    if (
+      id_type != get_type($7) ||
+      id_type != get_type($9) ||
+      id_type != get_type($11)  
+    )
+      err("incompatible types in branch statement.\n");
+  
+    // code gen
+    int indx = lookup_symbol($4, VAR|PAR|GLB);
+
+    gen_cmp(indx, $7);
+    code("\n\t\tJEQ branch_first_%d", branch_label);
+    gen_cmp(indx, $9);
+    code("\n\t\tJEQ branch_second_%d", branch_label);
+    gen_cmp(indx, $11);
+    code("\n\t\tJEQ branch_third_%d", branch_label);
+    code("\n\t\tJMP branch_otherwise_%d", branch_label);
+  }
+  _FIRST
+  {
+    code("\nbranch_first_%d:", branch_label);
+  }
+  statement 
+  {
+    code("\n\t\tJMP branch_exit_%d", branch_label);
+  }
+  _SECOND
+  {
+    code("\nbranch_second_%d:", branch_label);
+  }
+  statement
+  {
+    code("\n\t\tJMP branch_exit_%d", branch_label);
+  }
+  _THIRD
+  {
+    code("\nbranch_third_%d:", branch_label);
+  }
+  statement
+  {
+    code("\n\t\tJMP branch_exit_%d", branch_label);
+  }
+  _OTHERWISE
+  {
+    code("\nbranch_otherwise_%d:", branch_label);
+  }
+  statement
+  {
+    code("\nbranch_exit_%d:", branch_label);
+  }
   ;
-
 
 para_statement
   : _PARA
@@ -719,12 +760,12 @@ conditional_exp
     code(",");
     gen_sym_name($<i>7);
 
-    set_type($$, get_type($9));
     free_if_reg($9);
 
     code("\n@exit%d:", $<i>5); 
-
+    
     $$ = $<i>7;
+    set_type($$, get_type($6));
   }
   ;
 
@@ -935,6 +976,8 @@ int main() {
     free(atr2_res);
   }
   
+  free_glb_ids(glb_idsp); // oslobadja zauzetu strukturu
+
   if(synerr)
     return -1; //syntax error
   else if(error_count)

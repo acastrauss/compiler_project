@@ -1,7 +1,8 @@
-global int a = 5;
+int a, c, d;
 
 int main() {
     int b = a;
-    
+    a = 66;
+    c = a++ - d;
     return a;
 }

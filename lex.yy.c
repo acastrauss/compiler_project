@@ -963,7 +963,7 @@ YY_RULE_SETUP
 case 6:
 YY_RULE_SETUP
 #line 19 "micko.l"
-{ yylval.i = INT;  return _TYPE; }
+{ yylval.i = INT; return _TYPE; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP

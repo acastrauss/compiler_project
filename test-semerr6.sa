@@ -1,11 +1,13 @@
 //OPIS: Semanticka greska, fja u izrazu
 
+int g;
+
 int f() { return 4; }
 
 int main() {
     bool a = false;
 
-    if (f ^ true) 
+    if (f ^ a) 
     {
 
     }
