@@ -79,6 +79,11 @@ int mainarg = 0;
 %token _MOV
 %token _HALT
 
+%token <i> _AND
+%token <i> _OR
+%token <i> _XOR
+%token <i> _NOT
+
 %token <i> _REGISTER
 %token <i> _CONSTANT
 %token <i> _NUMBER
@@ -140,6 +145,7 @@ label_def
 
 asm_line
     :   arithmetic
+    |   logical
     |   flowcontrol
     |   stack
     |   _HALT
@@ -148,6 +154,32 @@ asm_line
             insert_code(INS_HALT, NO_TYPE, yylineno);
         }
     ;
+
+logical
+    :   _AND input _COMMA input _COMMA output 
+        {
+            insert_source("\t\t\tAND %s, %s, %s", $2, $4, $6);
+            insert_code(INS_AND, $1, yylineno);
+            free($2); free($4); free($6);
+        }
+    |   _OR input _COMMA input _COMMA output 
+        {
+            insert_source("\t\t\tOR %s, %s, %s", $2, $4, $6);
+            insert_code(INS_OR, $1, yylineno);
+            free($2); free($4); free($6);
+        }
+    |   _XOR input _COMMA input _COMMA output 
+        {
+            insert_source("\t\t\tXOR %s, %s, %s", $2, $4, $6);
+            insert_code(INS_XOR, $1, yylineno);
+            free($2); free($4); free($6);
+        }
+    |   _NOT input _COMMA output 
+        {
+            insert_source("\t\t\tNOT %s, %s", $2, $4);
+            insert_code(INS_NOT, $1, yylineno);
+            free($2); free($4);
+        } 
 
 arithmetic
     :   _ADD input _COMMA input _COMMA output

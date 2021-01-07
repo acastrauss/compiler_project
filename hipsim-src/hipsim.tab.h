@@ -72,15 +72,19 @@ extern int yydebug;
     _DIV = 278,
     _MOV = 279,
     _HALT = 280,
-    _REGISTER = 281,
-    _CONSTANT = 282,
-    _NUMBER = 283,
-    _LABEL_DEF = 284,
-    _LABEL = 285,
-    _ADDRESS = 286,
-    _COMMA = 287,
-    _LPAREN = 288,
-    _RPAREN = 289
+    _AND = 281,
+    _OR = 282,
+    _XOR = 283,
+    _NOT = 284,
+    _REGISTER = 285,
+    _CONSTANT = 286,
+    _NUMBER = 287,
+    _LABEL_DEF = 288,
+    _LABEL = 289,
+    _ADDRESS = 290,
+    _COMMA = 291,
+    _LPAREN = 292,
+    _RPAREN = 293
   };
 #endif
 
@@ -93,7 +97,7 @@ union YYSTYPE
     long i;
     char* s;
 
-#line 97 "hipsim.tab.h"
+#line 101 "hipsim.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -1,0 +1,10 @@
+//OPIS: conditional izraz
+// RETURN: 13
+int main() {
+    int a;
+    int b = 5;
+    
+    a = (b == 7) ? 11 : 13;
+    
+    return a;
+}

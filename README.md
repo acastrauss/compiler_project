@@ -16,3 +16,11 @@ NOTE: Popravi za fju sa vise parametara da se ne prepuni tabela
 15.12.2020. 09:22 Dodate sve definicije i headeri za generisanje koda, prepisi kod u .y fajl
 
 3.1.2021. 19:10 Popravio resenje za vise parametara, da radi dinamicki
+
+6.1.2021. 02:24 Vidi kako da namestis logicke operacije za hipsim
+
+7.1.2021. 01:31 
+    Zadaci:
+        1. Proveri oko oslobadjanja pokazivaca za atr2_fcall i atr2_res
+        2. Prepravi gloablne promenljive
+        3. Uradi za branch i para statement

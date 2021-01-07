@@ -1,11 +1,14 @@
-// OPIS: Jednolinijski i viselinijski komentari
-int main()
+#include <stdio.h>
+#include <stdlib.h>
+
+#define bool int
+#define TRUE  1
+#define FALSE 0
+
+
+int main() 
 {
-    // reutrn 9 ovo je sve jednolinijski komentari
-    /*
-    ovo je viselinijski komentar
-    */ 
-
-
+    int x = 1;
+    printf("%d\n", x++ + x++);
     return 0;
 }

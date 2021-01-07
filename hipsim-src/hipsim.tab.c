@@ -167,15 +167,19 @@ extern int yydebug;
     _DIV = 278,
     _MOV = 279,
     _HALT = 280,
-    _REGISTER = 281,
-    _CONSTANT = 282,
-    _NUMBER = 283,
-    _LABEL_DEF = 284,
-    _LABEL = 285,
-    _ADDRESS = 286,
-    _COMMA = 287,
-    _LPAREN = 288,
-    _RPAREN = 289
+    _AND = 281,
+    _OR = 282,
+    _XOR = 283,
+    _NOT = 284,
+    _REGISTER = 285,
+    _CONSTANT = 286,
+    _NUMBER = 287,
+    _LABEL_DEF = 288,
+    _LABEL = 289,
+    _ADDRESS = 290,
+    _COMMA = 291,
+    _LPAREN = 292,
+    _RPAREN = 293
   };
 #endif
 
@@ -188,7 +192,7 @@ union YYSTYPE
     long i;
     char* s;
 
-#line 192 "hipsim.tab.c"
+#line 196 "hipsim.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -507,19 +511,19 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  3
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   109
+#define YYLAST   133
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  35
+#define YYNTOKENS  39
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  15
+#define YYNNTS  16
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  44
+#define YYNRULES  49
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  93
+#define YYNSTATES  116
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   289
+#define YYMAXUTOK   293
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -559,18 +563,19 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,    30,    31,    32,    33,    34
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    37,    38
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    98,    98,   105,   106,   111,   110,   123,   124,   128,
-     129,   133,   142,   143,   144,   145,   153,   159,   165,   171,
-     177,   186,   192,   197,   202,   207,   212,   217,   222,   227,
-     232,   237,   242,   250,   256,   262,   267,   275,   285,   290,
-     295,   300,   304,   309,   318
+       0,   103,   103,   110,   111,   116,   115,   128,   129,   133,
+     134,   138,   147,   148,   149,   150,   151,   159,   165,   171,
+     177,   185,   191,   197,   203,   209,   218,   224,   229,   234,
+     239,   244,   249,   254,   259,   264,   269,   274,   282,   288,
+     294,   299,   307,   317,   322,   327,   332,   336,   341,   350
 };
 #endif
 
@@ -582,11 +587,11 @@ static const char *const yytname[] =
   "$end", "error", "$undefined", "_WORD", "_PUSH", "_POP", "_CALL",
   "_RET", "_CMP", "_JMP", "_JEQ", "_JNE", "_JGT", "_JLT", "_JGE", "_JLE",
   "_JC", "_JNC", "_JO", "_JNO", "_ADD", "_SUB", "_MUL", "_DIV", "_MOV",
-  "_HALT", "_REGISTER", "_CONSTANT", "_NUMBER", "_LABEL_DEF", "_LABEL",
-  "_ADDRESS", "_COMMA", "_LPAREN", "_RPAREN", "$accept", "program",
-  "variable_list", "variable", "@1", "code_list", "code_line", "label_def",
-  "asm_line", "arithmetic", "flowcontrol", "stack", "label", "output",
-  "input", YY_NULLPTR
+  "_HALT", "_AND", "_OR", "_XOR", "_NOT", "_REGISTER", "_CONSTANT",
+  "_NUMBER", "_LABEL_DEF", "_LABEL", "_ADDRESS", "_COMMA", "_LPAREN",
+  "_RPAREN", "$accept", "program", "variable_list", "variable", "@1",
+  "code_list", "code_line", "label_def", "asm_line", "logical",
+  "arithmetic", "flowcontrol", "stack", "label", "output", "input", YY_NULLPTR
 };
 #endif
 
@@ -598,11 +603,11 @@ static const yytype_int16 yytoknum[] =
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,   286,   287,   288,   289
+     285,   286,   287,   288,   289,   290,   291,   292,   293
 };
 # endif
 
-#define YYPACT_NINF (-25)
+#define YYPACT_NINF (-30)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -616,16 +621,18 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-     -25,     5,    14,   -25,   -24,    41,   -22,   -25,   -24,   -22,
-     -22,   -22,   -22,   -22,   -22,   -22,   -22,   -22,   -22,   -22,
-     -24,   -24,   -24,   -24,   -24,   -25,     7,   -25,    80,   -25,
-     -25,   -25,   -25,   -25,   -25,   -25,   -25,   -21,   -25,   -25,
-     -15,   -25,   -25,   -25,   -25,   -25,     8,   -25,   -25,   -25,
-     -25,   -25,   -25,   -25,   -25,   -25,   -25,   -25,    10,    23,
-      24,    25,    26,    56,   -25,   -25,    34,    32,   -24,   -24,
-     -24,   -24,   -24,    41,    42,    38,   -25,   -25,    43,    44,
-      45,    46,   -25,   -25,   -25,    41,    41,    41,    41,   -25,
-     -25,   -25,   -25
+     -30,     4,    31,   -30,   -29,   -23,   -24,   -30,   -29,   -24,
+     -24,   -24,   -24,   -24,   -24,   -24,   -24,   -24,   -24,   -24,
+     -29,   -29,   -29,   -29,   -29,   -30,   -29,   -29,   -29,   -29,
+       9,   -30,   100,   -30,   -30,   -30,   -30,   -30,   -30,   -30,
+     -30,   -30,   -22,   -30,   -30,   -14,   -30,   -30,   -30,   -30,
+     -30,   -19,   -30,   -30,   -30,   -30,   -30,   -30,   -30,   -30,
+     -30,   -30,   -30,   -18,   -17,   -16,   -15,   -13,   -12,    -6,
+      25,    27,    19,   -30,   -30,    46,    40,   -29,   -29,   -29,
+     -29,   -29,   -23,   -29,   -29,   -29,   -23,    47,    42,   -30,
+     -30,    51,    55,    57,    58,   -30,    59,    60,    94,   -30,
+     -30,   -30,   -23,   -23,   -23,   -23,   -23,   -23,   -23,   -30,
+     -30,   -30,   -30,   -30,   -30,   -30
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -633,30 +640,32 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       3,     0,     0,     1,     0,     0,     0,    36,     0,     0,
+       3,     0,     0,     1,     0,     0,     0,    41,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,    15,    11,     4,     2,     7,
-       9,    10,    12,    13,    14,    38,    42,     0,    37,    43,
-       0,    41,    44,    33,    34,    35,     0,    22,    23,    24,
-      25,    26,    27,    28,    29,    30,    31,    32,     0,     0,
-       0,     0,     0,     0,    11,     8,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,    40,    21,     0,     0,
-       0,     0,    20,     6,    39,     0,     0,     0,     0,    16,
-      17,    18,    19
+       0,     0,     0,     0,     0,    16,     0,     0,     0,     0,
+      11,     4,     2,     7,     9,    10,    13,    12,    14,    15,
+      43,    47,     0,    42,    48,     0,    46,    49,    38,    39,
+      40,     0,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    37,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,    11,     8,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,    45,
+      26,     0,     0,     0,     0,    25,     0,     0,     0,    20,
+       6,    44,     0,     0,     0,     0,     0,     0,     0,    21,
+      22,    23,    24,    17,    18,    19
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -25,   -25,   -25,   -25,   -25,   -25,    51,   -25,   -25,   -25,
-     -25,   -25,    35,    -5,    -7
+     -30,   -30,   -30,   -30,   -30,   -30,    99,   -30,   -30,   -30,
+     -30,   -30,   -30,    56,    -5,     5
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     1,     2,    27,    63,    28,    29,    30,    31,    32,
-      33,    34,    41,    42,    43
+      -1,     1,     2,    31,    72,    32,    33,    34,    35,    36,
+      37,    38,    39,    46,    47,    48
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -664,68 +673,76 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      44,    46,    35,    36,    37,     3,    38,    39,    38,    40,
-      -5,    67,    66,    58,    59,    60,    61,    62,     4,     5,
-       6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-      16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
-      68,    45,    69,    26,    47,    48,    49,    50,    51,    52,
-      53,    54,    55,    56,    57,    70,    71,    72,    73,    74,
-      75,    77,    78,    79,    80,    81,    76,    35,    82,    37,
-      83,    38,    84,     0,    40,    85,    86,    87,    88,    65,
-      89,    90,    91,    92,     4,     5,     6,     7,     8,     9,
+      49,    40,    41,    42,     3,    43,    44,    40,    45,    42,
+      43,    43,    -5,    51,    45,    75,    76,    77,    78,    79,
+      80,    81,    87,    82,    83,    63,    64,    65,    66,    67,
+      84,    68,    69,    70,    71,     4,     5,     6,     7,     8,
+       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
+      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
+      29,    85,    50,    86,    30,    52,    53,    54,    55,    56,
+      57,    58,    59,    60,    61,    62,    88,    95,    89,   100,
+     101,    99,    90,    91,    92,    93,    94,   102,    96,    97,
+      98,   103,     0,   104,   105,   106,   107,   109,   110,   111,
+     112,   113,   114,   115,     4,     5,     6,     7,     8,     9,
       10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-      20,    21,    22,    23,    24,    25,     0,     0,     0,    64
+      20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
+     108,    74,     0,    73
 };
 
 static const yytype_int8 yycheck[] =
 {
-       5,     8,    26,    27,    28,     0,    30,    31,    30,    33,
-       3,    26,    33,    20,    21,    22,    23,    24,     4,     5,
-       6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-      16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
-      32,     6,    32,    29,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    32,    32,    32,    32,     3,
-      26,    68,    69,    70,    71,    72,    34,    26,    73,    28,
-      28,    30,    34,    -1,    33,    32,    32,    32,    32,    28,
-      85,    86,    87,    88,     4,     5,     6,     7,     8,     9,
+       5,    30,    31,    32,     0,    34,    35,    30,    37,    32,
+      34,    34,     3,     8,    37,    37,    30,    36,    36,    36,
+      36,    36,     3,    36,    36,    20,    21,    22,    23,    24,
+      36,    26,    27,    28,    29,     4,     5,     6,     7,     8,
+       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
+      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
+      29,    36,     6,    36,    33,     9,    10,    11,    12,    13,
+      14,    15,    16,    17,    18,    19,    30,    82,    38,    32,
+      38,    86,    77,    78,    79,    80,    81,    36,    83,    84,
+      85,    36,    -1,    36,    36,    36,    36,   102,   103,   104,
+     105,   106,   107,   108,     4,     5,     6,     7,     8,     9,
       10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-      20,    21,    22,    23,    24,    25,    -1,    -1,    -1,    29
+      20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
+      36,    32,    -1,    33
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,    36,    37,     0,     4,     5,     6,     7,     8,     9,
+       0,    40,    41,     0,     4,     5,     6,     7,     8,     9,
       10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-      20,    21,    22,    23,    24,    25,    29,    38,    40,    41,
-      42,    43,    44,    45,    46,    26,    27,    28,    30,    31,
-      33,    47,    48,    49,    48,    47,    49,    47,    47,    47,
-      47,    47,    47,    47,    47,    47,    47,    47,    49,    49,
-      49,    49,    49,    39,    29,    41,    33,    26,    32,    32,
-      32,    32,    32,    32,     3,    26,    34,    49,    49,    49,
-      49,    49,    48,    28,    34,    32,    32,    32,    32,    48,
-      48,    48,    48
+      20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
+      33,    42,    44,    45,    46,    47,    48,    49,    50,    51,
+      30,    31,    32,    34,    35,    37,    52,    53,    54,    53,
+      52,    54,    52,    52,    52,    52,    52,    52,    52,    52,
+      52,    52,    52,    54,    54,    54,    54,    54,    54,    54,
+      54,    54,    43,    33,    45,    37,    30,    36,    36,    36,
+      36,    36,    36,    36,    36,    36,    36,     3,    30,    38,
+      54,    54,    54,    54,    54,    53,    54,    54,    54,    53,
+      32,    38,    36,    36,    36,    36,    36,    36,    36,    53,
+      53,    53,    53,    53,    53,    53
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    35,    36,    37,    37,    39,    38,    40,    40,    41,
-      41,    42,    43,    43,    43,    43,    44,    44,    44,    44,
-      44,    45,    45,    45,    45,    45,    45,    45,    45,    45,
-      45,    45,    45,    46,    46,    46,    46,    47,    48,    48,
-      48,    48,    49,    49,    49
+       0,    39,    40,    41,    41,    43,    42,    44,    44,    45,
+      45,    46,    47,    47,    47,    47,    47,    48,    48,    48,
+      48,    49,    49,    49,    49,    49,    50,    50,    50,    50,
+      50,    50,    50,    50,    50,    50,    50,    50,    51,    51,
+      51,    51,    52,    53,    53,    53,    53,    54,    54,    54
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     2,     0,     2,     0,     4,     1,     2,     1,
-       1,     1,     1,     1,     1,     1,     6,     6,     6,     6,
-       4,     4,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     1,     1,     1,     4,
-       3,     1,     1,     1,     1
+       1,     1,     1,     1,     1,     1,     1,     6,     6,     6,
+       4,     6,     6,     6,     6,     4,     4,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     1,     1,     1,     4,     3,     1,     1,     1,     1
 };
 
 
@@ -1421,21 +1438,21 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 99 "hipsim.y"
+#line 104 "hipsim.y"
         {
             add_entry_code(mainarg);
         }
-#line 1429 "hipsim.tab.c"
+#line 1446 "hipsim.tab.c"
     break;
 
   case 5:
-#line 111 "hipsim.y"
+#line 116 "hipsim.y"
         { (yyval.i) = yylineno; }
-#line 1435 "hipsim.tab.c"
+#line 1452 "hipsim.tab.c"
     break;
 
   case 6:
-#line 113 "hipsim.y"
+#line 118 "hipsim.y"
         {
             uchar data[256];
             int i,len = (yyvsp[0].i)*4;
@@ -1443,274 +1460,314 @@ yyreduce:
             insert_source("%s:\t\t\tWORD %ld",(yyvsp[-3].s),(yyvsp[0].i));
             insert_data(data,len, (yyvsp[-3].s), (yyvsp[-2].i));
         }
-#line 1447 "hipsim.tab.c"
+#line 1464 "hipsim.tab.c"
     break;
 
   case 11:
-#line 134 "hipsim.y"
+#line 139 "hipsim.y"
         {
             insert_source("%s:",(yyvsp[0].s));
             insert_label((yyvsp[0].s), code_cnt, yylineno, SYM_JUMP);
             source_cnt++;
         }
-#line 1457 "hipsim.tab.c"
+#line 1474 "hipsim.tab.c"
     break;
 
-  case 15:
-#line 146 "hipsim.y"
+  case 16:
+#line 152 "hipsim.y"
         {
             insert_source("\t\t\tHALT");
             insert_code(INS_HALT, NO_TYPE, yylineno);
         }
-#line 1466 "hipsim.tab.c"
-    break;
-
-  case 16:
-#line 154 "hipsim.y"
-        {
-            insert_source("\t\t\tADD%c %s, %s, %s", type_char((yyvsp[-5].i)), (yyvsp[-4].s), (yyvsp[-2].s), (yyvsp[0].s));
-            insert_code(INS_ADD, (yyvsp[-5].i), yylineno);
-            free((yyvsp[-4].s)); free((yyvsp[-2].s)); free((yyvsp[0].s));
-        }
-#line 1476 "hipsim.tab.c"
+#line 1483 "hipsim.tab.c"
     break;
 
   case 17:
 #line 160 "hipsim.y"
         {
-            insert_source("\t\t\tSUB%c %s, %s, %s", type_char((yyvsp[-5].i)), (yyvsp[-4].s), (yyvsp[-2].s), (yyvsp[0].s));
-            insert_code(INS_SUB, (yyvsp[-5].i), yylineno);
+            insert_source("\t\t\tAND %s, %s, %s", (yyvsp[-4].s), (yyvsp[-2].s), (yyvsp[0].s));
+            insert_code(INS_AND, (yyvsp[-5].i), yylineno);
             free((yyvsp[-4].s)); free((yyvsp[-2].s)); free((yyvsp[0].s));
         }
-#line 1486 "hipsim.tab.c"
+#line 1493 "hipsim.tab.c"
     break;
 
   case 18:
 #line 166 "hipsim.y"
         {
-            insert_source("\t\t\tMUL%c %s, %s, %s", type_char((yyvsp[-5].i)), (yyvsp[-4].s), (yyvsp[-2].s), (yyvsp[0].s));
-            insert_code(INS_MUL, (yyvsp[-5].i), yylineno);
+            insert_source("\t\t\tOR %s, %s, %s", (yyvsp[-4].s), (yyvsp[-2].s), (yyvsp[0].s));
+            insert_code(INS_OR, (yyvsp[-5].i), yylineno);
             free((yyvsp[-4].s)); free((yyvsp[-2].s)); free((yyvsp[0].s));
         }
-#line 1496 "hipsim.tab.c"
+#line 1503 "hipsim.tab.c"
     break;
 
   case 19:
 #line 172 "hipsim.y"
         {
-            insert_source("\t\t\tDIV%c %s, %s, %s", type_char((yyvsp[-5].i)), (yyvsp[-4].s), (yyvsp[-2].s), (yyvsp[0].s));
-            insert_code(INS_DIV, (yyvsp[-5].i), yylineno);
+            insert_source("\t\t\tXOR %s, %s, %s", (yyvsp[-4].s), (yyvsp[-2].s), (yyvsp[0].s));
+            insert_code(INS_XOR, (yyvsp[-5].i), yylineno);
             free((yyvsp[-4].s)); free((yyvsp[-2].s)); free((yyvsp[0].s));
         }
-#line 1506 "hipsim.tab.c"
+#line 1513 "hipsim.tab.c"
     break;
 
   case 20:
 #line 178 "hipsim.y"
         {
-            insert_source("\t\t\tMOV %s, %s", (yyvsp[-2].s), (yyvsp[0].s));
-            insert_code(INS_MOV, NO_TYPE, yylineno);
+            insert_source("\t\t\tNOT %s, %s", (yyvsp[-2].s), (yyvsp[0].s));
+            insert_code(INS_NOT, (yyvsp[-3].i), yylineno);
             free((yyvsp[-2].s)); free((yyvsp[0].s));
         }
-#line 1516 "hipsim.tab.c"
+#line 1523 "hipsim.tab.c"
     break;
 
   case 21:
-#line 187 "hipsim.y"
+#line 186 "hipsim.y"
         {
-            insert_source("\t\t\tCMP%c %s, %s", type_char((yyvsp[-3].i)), (yyvsp[-2].s), (yyvsp[0].s));
-            insert_code(INS_CMP, (yyvsp[-3].i), yylineno);
-            free((yyvsp[-2].s)); free((yyvsp[0].s));
+            insert_source("\t\t\tADD%c %s, %s, %s", type_char((yyvsp[-5].i)), (yyvsp[-4].s), (yyvsp[-2].s), (yyvsp[0].s));
+            insert_code(INS_ADD, (yyvsp[-5].i), yylineno);
+            free((yyvsp[-4].s)); free((yyvsp[-2].s)); free((yyvsp[0].s));
         }
-#line 1526 "hipsim.tab.c"
+#line 1533 "hipsim.tab.c"
     break;
 
   case 22:
-#line 193 "hipsim.y"
+#line 192 "hipsim.y"
         {
-            insert_source("\t\t\tJMP %s", (yyvsp[0].s));
-            insert_code(INS_JMP, NO_TYPE, yylineno);
+            insert_source("\t\t\tSUB%c %s, %s, %s", type_char((yyvsp[-5].i)), (yyvsp[-4].s), (yyvsp[-2].s), (yyvsp[0].s));
+            insert_code(INS_SUB, (yyvsp[-5].i), yylineno);
+            free((yyvsp[-4].s)); free((yyvsp[-2].s)); free((yyvsp[0].s));
         }
-#line 1535 "hipsim.tab.c"
+#line 1543 "hipsim.tab.c"
     break;
 
   case 23:
 #line 198 "hipsim.y"
         {
-            insert_source("\t\t\tJEQ %s", (yyvsp[0].s));
-            insert_code(INS_JEQ, NO_TYPE, yylineno);
-        }
-#line 1544 "hipsim.tab.c"
-    break;
-
-  case 24:
-#line 203 "hipsim.y"
-        {
-            insert_source("\t\t\tJNE %s", (yyvsp[0].s));
-            insert_code(INS_JNE, NO_TYPE, yylineno);
+            insert_source("\t\t\tMUL%c %s, %s, %s", type_char((yyvsp[-5].i)), (yyvsp[-4].s), (yyvsp[-2].s), (yyvsp[0].s));
+            insert_code(INS_MUL, (yyvsp[-5].i), yylineno);
+            free((yyvsp[-4].s)); free((yyvsp[-2].s)); free((yyvsp[0].s));
         }
 #line 1553 "hipsim.tab.c"
     break;
 
+  case 24:
+#line 204 "hipsim.y"
+        {
+            insert_source("\t\t\tDIV%c %s, %s, %s", type_char((yyvsp[-5].i)), (yyvsp[-4].s), (yyvsp[-2].s), (yyvsp[0].s));
+            insert_code(INS_DIV, (yyvsp[-5].i), yylineno);
+            free((yyvsp[-4].s)); free((yyvsp[-2].s)); free((yyvsp[0].s));
+        }
+#line 1563 "hipsim.tab.c"
+    break;
+
   case 25:
-#line 208 "hipsim.y"
+#line 210 "hipsim.y"
+        {
+            insert_source("\t\t\tMOV %s, %s", (yyvsp[-2].s), (yyvsp[0].s));
+            insert_code(INS_MOV, NO_TYPE, yylineno);
+            free((yyvsp[-2].s)); free((yyvsp[0].s));
+        }
+#line 1573 "hipsim.tab.c"
+    break;
+
+  case 26:
+#line 219 "hipsim.y"
+        {
+            insert_source("\t\t\tCMP%c %s, %s", type_char((yyvsp[-3].i)), (yyvsp[-2].s), (yyvsp[0].s));
+            insert_code(INS_CMP, (yyvsp[-3].i), yylineno);
+            free((yyvsp[-2].s)); free((yyvsp[0].s));
+        }
+#line 1583 "hipsim.tab.c"
+    break;
+
+  case 27:
+#line 225 "hipsim.y"
+        {
+            insert_source("\t\t\tJMP %s", (yyvsp[0].s));
+            insert_code(INS_JMP, NO_TYPE, yylineno);
+        }
+#line 1592 "hipsim.tab.c"
+    break;
+
+  case 28:
+#line 230 "hipsim.y"
+        {
+            insert_source("\t\t\tJEQ %s", (yyvsp[0].s));
+            insert_code(INS_JEQ, NO_TYPE, yylineno);
+        }
+#line 1601 "hipsim.tab.c"
+    break;
+
+  case 29:
+#line 235 "hipsim.y"
+        {
+            insert_source("\t\t\tJNE %s", (yyvsp[0].s));
+            insert_code(INS_JNE, NO_TYPE, yylineno);
+        }
+#line 1610 "hipsim.tab.c"
+    break;
+
+  case 30:
+#line 240 "hipsim.y"
         {
             insert_source("\t\t\tJGT%c %s", type_char((yyvsp[-1].i)), (yyvsp[0].s));
             insert_code(INS_JGT, (yyvsp[-1].i), yylineno);
         }
-#line 1562 "hipsim.tab.c"
+#line 1619 "hipsim.tab.c"
     break;
 
-  case 26:
-#line 213 "hipsim.y"
+  case 31:
+#line 245 "hipsim.y"
         {
             insert_source("\t\t\tJLT%c %s", type_char((yyvsp[-1].i)), (yyvsp[0].s));
             insert_code(INS_JLT, (yyvsp[-1].i), yylineno);
         }
-#line 1571 "hipsim.tab.c"
+#line 1628 "hipsim.tab.c"
     break;
 
-  case 27:
-#line 218 "hipsim.y"
+  case 32:
+#line 250 "hipsim.y"
         {
             insert_source("\t\t\tJGE%c %s", type_char((yyvsp[-1].i)), (yyvsp[0].s));
             insert_code(INS_JGE, (yyvsp[-1].i), yylineno);
         }
-#line 1580 "hipsim.tab.c"
+#line 1637 "hipsim.tab.c"
     break;
 
-  case 28:
-#line 223 "hipsim.y"
+  case 33:
+#line 255 "hipsim.y"
         {
             insert_source("\t\t\tJLE%c %s", type_char((yyvsp[-1].i)), (yyvsp[0].s));
             insert_code(INS_JLE, (yyvsp[-1].i), yylineno);
         }
-#line 1589 "hipsim.tab.c"
+#line 1646 "hipsim.tab.c"
     break;
 
-  case 29:
-#line 228 "hipsim.y"
+  case 34:
+#line 260 "hipsim.y"
         {
             insert_source("\t\t\tJC %s", (yyvsp[0].s));
             insert_code(INS_JC, NO_TYPE, yylineno);
         }
-#line 1598 "hipsim.tab.c"
+#line 1655 "hipsim.tab.c"
     break;
 
-  case 30:
-#line 233 "hipsim.y"
+  case 35:
+#line 265 "hipsim.y"
         {
             insert_source("\t\t\tJNC %s", (yyvsp[0].s));
             insert_code(INS_JNC, NO_TYPE, yylineno);
         }
-#line 1607 "hipsim.tab.c"
+#line 1664 "hipsim.tab.c"
     break;
 
-  case 31:
-#line 238 "hipsim.y"
+  case 36:
+#line 270 "hipsim.y"
         {
             insert_source("\t\t\tJO %s", (yyvsp[0].s));
             insert_code(INS_JO, NO_TYPE, yylineno);
         }
-#line 1616 "hipsim.tab.c"
+#line 1673 "hipsim.tab.c"
     break;
 
-  case 32:
-#line 243 "hipsim.y"
+  case 37:
+#line 275 "hipsim.y"
         {
             insert_source("\t\t\tJNO %s", (yyvsp[0].s));
             insert_code(INS_JNO, NO_TYPE, yylineno);
         }
-#line 1625 "hipsim.tab.c"
+#line 1682 "hipsim.tab.c"
     break;
 
-  case 33:
-#line 251 "hipsim.y"
+  case 38:
+#line 283 "hipsim.y"
         {
             insert_source("\t\t\tPUSH %s", (yyvsp[0].s));
             insert_code(INS_PUSH, NO_TYPE, yylineno);
             free((yyvsp[0].s));
         }
-#line 1635 "hipsim.tab.c"
+#line 1692 "hipsim.tab.c"
     break;
 
-  case 34:
-#line 257 "hipsim.y"
+  case 39:
+#line 289 "hipsim.y"
         {
             insert_source("\t\t\tPOP %s", (yyvsp[0].s));
             insert_code(INS_POP, NO_TYPE, yylineno);
             free((yyvsp[0].s));
         }
-#line 1645 "hipsim.tab.c"
+#line 1702 "hipsim.tab.c"
     break;
 
-  case 35:
-#line 263 "hipsim.y"
+  case 40:
+#line 295 "hipsim.y"
         {
             insert_source("\t\t\tCALL %s", (yyvsp[0].s));
             insert_code(INS_CALL, NO_TYPE, yylineno);
         }
-#line 1654 "hipsim.tab.c"
+#line 1711 "hipsim.tab.c"
     break;
 
-  case 36:
-#line 268 "hipsim.y"
+  case 41:
+#line 300 "hipsim.y"
         {
             insert_source("\t\t\tRET");
             insert_code(INS_RET, NO_TYPE, yylineno);
         }
-#line 1663 "hipsim.tab.c"
+#line 1720 "hipsim.tab.c"
     break;
 
-  case 37:
-#line 276 "hipsim.y"
+  case 42:
+#line 308 "hipsim.y"
         {
             int l;
             (yyval.s) = make_opstr("%s",(yyvsp[0].s));
             l = use_label((yyvsp[0].s), yylineno);
             add_operand(OP_DATA,0,l);
         }
-#line 1674 "hipsim.tab.c"
+#line 1731 "hipsim.tab.c"
     break;
 
-  case 38:
-#line 286 "hipsim.y"
+  case 43:
+#line 318 "hipsim.y"
         {
             add_operand(OP_REGISTER,(yyvsp[0].i),0);
             (yyval.s) = make_opstr("%%%ld",(yyvsp[0].i));
         }
-#line 1683 "hipsim.tab.c"
+#line 1740 "hipsim.tab.c"
     break;
 
-  case 39:
-#line 291 "hipsim.y"
+  case 44:
+#line 323 "hipsim.y"
         {
             add_operand(OP_INDEX,(yyvsp[-1].i),(yyvsp[-3].i));
             (yyval.s) = make_opstr("%ld(%%%ld)",(yyvsp[-3].i),(yyvsp[-1].i));
         }
-#line 1692 "hipsim.tab.c"
+#line 1749 "hipsim.tab.c"
     break;
 
-  case 40:
-#line 296 "hipsim.y"
+  case 45:
+#line 328 "hipsim.y"
         {
             add_operand(OP_INDIRECT,(yyvsp[-1].i),0);
             (yyval.s) = make_opstr("(%%%ld)",(yyvsp[-1].i));
         }
-#line 1701 "hipsim.tab.c"
+#line 1758 "hipsim.tab.c"
     break;
 
-  case 42:
-#line 305 "hipsim.y"
+  case 47:
+#line 337 "hipsim.y"
         {
             add_operand(OP_CONSTANT,0,(yyvsp[0].i));
             (yyval.s) = make_opstr("$%ld",(yyvsp[0].i));
         }
-#line 1710 "hipsim.tab.c"
+#line 1767 "hipsim.tab.c"
     break;
 
-  case 43:
-#line 310 "hipsim.y"
+  case 48:
+#line 342 "hipsim.y"
         {
             int l;
             (yyval.s) = make_opstr("$%s",(yyvsp[0].s));
@@ -1719,11 +1776,11 @@ yyreduce:
                 parsererror("Undeclared global variable %s",$1); */
             add_operand(OP_CONSTANT,0,symtab[l].address);
         }
-#line 1723 "hipsim.tab.c"
+#line 1780 "hipsim.tab.c"
     break;
 
 
-#line 1727 "hipsim.tab.c"
+#line 1784 "hipsim.tab.c"
 
       default: break;
     }
@@ -1955,7 +2012,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 321 "hipsim.y"
+#line 353 "hipsim.y"
 
 
 int yyerror(char *s) {

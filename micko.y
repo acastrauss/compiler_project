@@ -36,6 +36,14 @@
   int var_num_before_id_list = 0;
 
   int rel_used = -1; // ako je bilo koja druga bool operacija ide sa jne, osim sa relacionim mora da se gleda koji je i tada ce cuvati koji je rel op
+
+  int cond_exp_label = 0;
+
+  unsigned glb_type = 0;
+  int glb_used = 1;
+
+  ATR2* atr2_fcall = NULL; // za pozive fja
+  ATR2* atr2_res = NULL; // ukoliko ima ugnjezdenih
 %}
 
 %union {
@@ -48,6 +56,7 @@
 %token _IF
 %token _ELSE
 %token _RETURN
+%token _GLOBAL
 
 %token <s> _PARA
 %token _EN
@@ -97,37 +106,29 @@
 %%
 
 program
-  : global_varlist
-    function_list
-      {  
-        if(lookup_symbol("main", FUN) == NO_INDEX)
-          err("undefined reference to 'main'");
-       }
+  :
+  glb_var_list
+  {
+    glb_used = 0;
+
+    // mora ovde inicijalizacija 
+    atr2_res = create_atr2();
+    atr2_fcall = create_atr2();
+  }
+  function_list
+  {  
+    if(lookup_symbol("main", FUN) == NO_INDEX)
+      err("undefined reference to 'main'");
+  }
   ;
 
-global_varlist
-  : /* nothing */
-  | global_varlist global_var
+glb_var_list
+  : 
+  | glb_var_list glb_var
   ;
 
-global_var
-  : _TYPE _ID
-      {
-        if(lookup_symbol($2, GLB) == NO_INDEX) 
-        {
-          gen_glbvar(insert_symbol($2, GLB, $1, ++glb_num, create_atr2()));
-          //insert_symbol($2, GLB, $1, ++glb_num, create_atr2());
-        }
-        else 
-           err("redefinition of '%s'", $2);
-      }
-      opt_assign 
-      {
-        if ((get_type($4) != $1) && $4 != -1) 
-        {
-          err("incompatible types in assignment.");
-        }
-      }
+glb_var
+  : _GLOBAL variable
   ;
 
 function_list
@@ -208,7 +209,8 @@ parameter
   ;
 
 body
-  : _LBRACKET variable_list 
+  : 
+  _LBRACKET variable_list 
   {
     code("\n@%s_body:", get_name(fun_idx));
   } 
@@ -227,7 +229,8 @@ variable
         err("variable can not be void.");
 
       id_type = $1;
-
+      glb_type = $1;
+  
       var_num_before_id_list = var_num;
     }
   id_list opt_assign
@@ -236,26 +239,31 @@ variable
       {
         err("incompatible types in assignment.");
       }
-
-      int nod = var_num - var_num_before_id_list; // broj definisanih
-
-      int size = ($1 == BOOL) ? 1 : 4; // jer je ili bool pa 1 byte ili int/uint pa 4 byte-a
-
-      if (nod) 
+      
+      if(!glb_used)
       {
-        code("\n\t\tSUBS\t%%15,$%d,%%15", size*nod); // za broj definisanih 
-      }
+        int nod = var_num - var_num_before_id_list; // broj definisanih
 
-      if ($4 != -1)
-      { // ako su definisane proemnljive
+        int size = ($1 == BOOL) ? 1 : 4; // jer je ili bool pa 1 byte ili int/uint pa 4 byte-a
 
-        for (int i = 1; i < nod + 1; i++) 
+        if (nod) 
         {
-          code("\n\t\tMOV ");
-          gen_sym_name($4);
-          code(",-%d(%%14)", (var_num_before_id_list + i) * size);
-
+          code("\n\t\tSUBS\t%%15,$%d,%%15", size*nod); // za broj definisanih 
         }
+
+        if ($4 != -1)
+        { // ako su definisane proemnljive
+          for (int i = 1; i < nod + 1; i++) 
+          {
+            code("\n\t\tMOV ");
+            gen_sym_name($4);
+            code(",-%d(%%14)", (var_num_before_id_list + i) * size);
+          }
+        }
+      }
+      else 
+      {
+
       }
     }
   ;
@@ -268,17 +276,37 @@ opt_assign
 id_list
   : _ID
       {
-        if(lookup_symbol($1, VAR|PAR) == NO_INDEX)
-           insert_symbol($1, VAR, id_type, ++var_num, create_atr2());
-        else 
+        if(glb_used) 
+        {
+          if(lookup_symbol($1, GLB) == NO_INDEX)
+            gen_glbvar(insert_symbol($1, GLB, glb_type, ++glb_num, create_atr2()));
+          else 
            err("redefinition of '%s'", $1);
+        }
+        else 
+        {
+          if(lookup_symbol($1, VAR|PAR) == NO_INDEX)
+           insert_symbol($1, VAR, id_type, ++var_num, create_atr2());
+          else 
+           err("redefinition of '%s'", $1);
+        }
       }
   | id_list _COMMA _ID
       {
-        if(lookup_symbol($3, VAR|PAR) == NO_INDEX)
-           insert_symbol($3, VAR, id_type, ++var_num, create_atr2());
+        if (glb_used) 
+        {
+          if(lookup_symbol($3, GLB) == NO_INDEX)
+            gen_glbvar(insert_symbol($3, GLB, glb_type, ++glb_num, create_atr2()));
+          else 
+            err("redefinition of '%s'", $3);
+        }
         else 
-           err("redefinition of '%s'", $3);
+        {
+          if(lookup_symbol($3, VAR|PAR) == NO_INDEX)
+            insert_symbol($3, VAR, id_type, ++var_num, create_atr2());
+          else 
+            err("redefinition of '%s'", $3); 
+        }
       }
   ;
 
@@ -300,7 +328,7 @@ statement
 branch_statement
   : _BRANCH _LSQRBRACKET _ID
       {
-        if((indx_branch = lookup_symbol($3, VAR|PAR)) == NO_INDEX)
+        if((indx_branch = lookup_symbol($3, VAR|PAR|GLB)) == NO_INDEX)
           err("undefined '%s' in branch statement\n", $3);
       }
     _RARROW literal _RARROW literal _RARROW literal _RSQRBRACKET
@@ -324,7 +352,7 @@ branch_statement
 para_statement
   : _PARA _ID 
     {
-      int idx = lookup_symbol($2, VAR|PAR);
+      int idx = lookup_symbol($2, VAR|PAR|GLB);
       if(idx == NO_INDEX)
         err("undefined '%s' in para statement", $2);
       
@@ -395,7 +423,7 @@ compound_statement
 assignment_statement
   : _ID _ASSIGN exp_statement
       {
-        int idx = lookup_symbol($1, VAR|PAR);
+        int idx = lookup_symbol($1, VAR|PAR|GLB);
         if(idx == NO_INDEX)
           err("invalid lvalue '%s' in assignment", $1);
         else
@@ -449,15 +477,15 @@ basic_bool
       rel_used = -1;
       // any expresion != 0 is true
       //printf("\ninstr:%s\n", bool_instructions[$2]);
-      code("\n\t\t%s\t", bool_instructions[$2]);
+      code("\n\t\t%s\t\t", bool_instructions[$2]);
       gen_sym_name($1);
       code(",");
       gen_sym_name($3);
-      //code(",");
+      code(",");
       free_if_reg($1);
       free_if_reg($3);
       $$ = take_reg();
-      //gen_sym_name($$);
+      gen_sym_name($$);
       set_type($$, get_type($3));
     }
   | _NOT _LPAREN basic_bool _RPAREN 
@@ -472,6 +500,14 @@ basic_bool
   { 
     $$ = $3;
     rel_used = -1;
+
+    code("\n\t\tNOT\t\t");
+    gen_sym_name($3);
+    code(",");
+    free_if_reg($3);
+    $$ = take_reg();
+    gen_sym_name($$);
+    set_type($$, get_type($3));
   }
   | _LPAREN bool_exp _RPAREN 
   { 
@@ -488,15 +524,15 @@ bool_exp
   | bool_exp _BOOLOP basic_bool 
   {
     int t1 = get_type($1);    
-    code("\n\t\t%s\t", bool_instructions[$2]);
+    code("\n\t\t%s\t\t", bool_instructions[$2]);
     gen_sym_name($1);
     code(",");
     gen_sym_name($3);
-    //code(",");
+    code(",");
     free_if_reg($3);
     free_if_reg($1);
     $$ = take_reg();
-    //gen_sym_name($$);
+    gen_sym_name($$);
     set_type($$, t1);
   }
   ;
@@ -504,15 +540,68 @@ bool_exp
 inc_exp
   : _ID _INCOP 
     {
-      $$ = lookup_symbol($1, VAR|PAR);
+      $$ = lookup_symbol($1, VAR|PAR|GLB);
       if($$ == NO_INDEX)
         err("no variable named :'%s'", $1); 
+
+      int type = get_type($$);
+
+      if(type == BOOL || type == VOID) 
+      {
+        err("wrong type in increment expression.");
+      }
+
+      int indx_temp = $$;
+
+      $$ = take_reg();
+
+      code("\n\t\tMOV\t"); // jer povratna vrednost ove akcije treba da bude x, ako je x++
+      gen_sym_name(indx_temp);
+      code(",");
+      gen_sym_name($$);
+
+      set_type($$, type);
+      
+      char sufix = (type == INT) ? 'S' : 'U'; 
+
+      code("\n\t\tADD%c\t$1", sufix);
+      code(",");
+      gen_sym_name(indx_temp);
+      code(",");
+      gen_sym_name(indx_temp);
+
     }
   | _INCOP _ID 
     {
-      $$ = lookup_symbol($2, VAR|PAR);
+      $$ = lookup_symbol($2, VAR|PAR|GLB);
       if($$ == NO_INDEX)
         err("no variable named :'%s'", $2);
+    
+            int type = get_type($$);
+
+      if(type == BOOL || type == VOID) 
+      {
+        err("wrong type in increment expression.");
+      }
+
+      int indx_temp = $$;
+      
+      char sufix = (type == INT) ? 'S' : 'U'; 
+
+      code("\n\t\tADD%c\t$1", sufix);
+      code(",");
+      gen_sym_name(indx_temp);
+      code(",");
+      gen_sym_name(indx_temp);
+
+      $$ = take_reg();
+
+      code("\n\t\tMOV\t"); // jer povratna vrednost ove akcije treba da bude x, ako je x++
+      gen_sym_name(indx_temp);
+      code(",");
+      gen_sym_name($$);
+
+      set_type($$, type);
     }
   ;
 
@@ -522,7 +611,7 @@ exp
   | inc_exp
   | _ID
       {
-        $$ = lookup_symbol($1, VAR|PAR);
+        $$ = lookup_symbol($1, VAR|PAR|GLB);
         if($$ == NO_INDEX)
           err("'%s' undeclared", $1);
       }
@@ -538,16 +627,61 @@ exp
   ;
 
 conditional_exp
-  : _LPAREN bool_exp _RPAREN _QMARK exp_c _DOUBLEDOT exp_c 
+  : _LPAREN bool_exp _RPAREN _QMARK
   {
-    //printf("\ntype(1): %d \t type(2): %d", get_type($5), get_type($7));
-    //print_symtab();
-    if (get_type($5) != get_type($7)) 
+    $<i>$ = ++lab_num;
+    code("\n@if%d:", $<i>$);
+  } 
+  exp_c 
+  {
+    int if_lab = $<i>5;
+
+    // prvo se mora odrediti skok
+    if (rel_used != -1) 
+    { 
+      code("\n\t\t%s\t@false%d", opp_jumps[$2], if_lab);
+    }
+    else
+    {
+      code("\n\t\tJEQ \t@false%d", if_lab);
+    }
+
+    code("\n@true%d:", if_lab);
+
+    $<i>$ = take_reg();
+
+    code("\n\t\tMOV "); // izvrsice se samo je ako je tacan uslov
+    gen_sym_name($6);
+    code(",");
+    gen_sym_name($<i>$);
+
+    set_type($<i>$, get_type($6));
+    free_if_reg($6);
+
+    code("\n\t\tJMP \t@exit%d", if_lab);
+
+    code("\n@false%d:", if_lab);
+  }
+  _DOUBLEDOT exp_c 
+  {
+    if (get_type($6) != get_type($9)) 
     {
       err("incompatible types in conditional expression.");
     }
-    $$ = $5; // ovo mozda treba promeniti kada se ispituje kog je tipa 
+
+    code("\n\t\tMOV "); // izvrsice se samo je ako je tacan uslov
+    gen_sym_name($9);
+    code(",");
+    gen_sym_name($<i>7);
+
+    set_type($$, get_type($9));
+    free_if_reg($9);
+
+    code("\n@exit%d:", $<i>5); 
+
+    $$ = $<i>7;
   }
+  ;
 
 exp_c
   : num_exp
@@ -571,20 +705,37 @@ function_call
           err("'%s' is not a function", $1);
 
       }
-    _LPAREN real_arg_list _RPAREN
+    _LPAREN 
+    {
+      atr2_res = atr2_fcall; // ukoliko ima ugnjezdenih
+    } 
+    real_arg_list _RPAREN
+    {
+      if(get_atr1(fcall_idx) != curr_arg)
+        err("wrong number of args to function '%s'", 
+            get_name(fcall_idx));
+
+      // pushovanje argumenata suprotnim redosledom
+      for( int i = curr_arg - 1; i >= 0; i--) 
       {
-        if(get_atr1(fcall_idx) != $4)
-          err("wrong number of args to function '%s'", 
-              get_name(fcall_idx));
-        
-        code("\n\t\t\tCALL\t%s", get_name(fcall_idx));
-        if($4 > 0)
-          code("\n\t\t\tADDS\t%%15,$%d,%%15", $4 * 4);
-        set_type(FUN_REG, get_type(fcall_idx));
-        $$ = FUN_REG;
-      
-        curr_arg = 0;
+        int indx = atr2_fcall->atr2[i];
+
+        free_if_reg(indx);
+        code("\n\t\t\tPUSH\t");
+        gen_sym_name(indx);
       }
+
+      code("\n\t\t\tCALL\t%s", get_name(fcall_idx));
+      if($5 > 0)
+        code("\n\t\t\tADDS\t%%15,$%d,%%15", $5 * 4);
+      
+      set_type(FUN_REG, get_type(fcall_idx));
+      $$ = FUN_REG;
+    
+      curr_arg = 0;
+
+      atr2_fcall = atr2_res; // vracanje na staru vrednost
+    }
   ;
 
 real_arg_list
@@ -595,7 +746,7 @@ real_arg_list
   ;
 
 argument_list
-  : argument
+  : argument 
   | argument_list _COMMA argument
   ;
 
@@ -609,11 +760,11 @@ argument
       if(atr2p->atr2[curr_arg - 1] != get_type($1))
         err("incompatible type for argument in '%s'",
             get_name(fcall_idx));
-      free_if_reg($1);
-      code("\n\t\t\tPUSH\t");
-      gen_sym_name($1);
 
-      $$ = curr_arg;
+      atr2_fcall->occupied = curr_arg;
+      atr2_fcall->atr2[curr_arg - 1] = $1; // cuva se indeks u tabeli argumenta da bi kasnije mogao da se pushuje suprotnim redosledom
+
+      $$ = $1;
     }
   ;
 
@@ -670,6 +821,7 @@ rel_exp
 return_statement
   : _RETURN num_exp _SEMICOLON
       {
+
         if(get_type(fun_idx) != get_type($2))
           err("incompatible types in return");
 
@@ -725,7 +877,19 @@ int main() {
     printf("\n%d error(s).\n", error_count);
     remove("output.asm");
   }
-
+  
+  if(atr2_fcall)
+  {
+    free(atr2_fcall);
+    atr2_fcall = 0;
+  }
+  
+  if(atr2_res) 
+  {
+    atr2_res = 0;
+    free(atr2_res);
+  }
+  
   if(synerr)
     return -1; //syntax error
   else if(error_count)

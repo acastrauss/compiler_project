@@ -34,8 +34,8 @@
 /* Undocumented macros, especially those whose name start with YY_,
    are private implementation details.  Do not rely on them.  */
 
-#ifndef YY_YY_MICKO_TAB_H_INCLUDED
-# define YY_YY_MICKO_TAB_H_INCLUDED
+#ifndef YY_YY_SEMANTIC_TAB_H_INCLUDED
+# define YY_YY_SEMANTIC_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -53,38 +53,37 @@ extern int yydebug;
     _IF = 259,
     _ELSE = 260,
     _RETURN = 261,
-    _GLOBAL = 262,
-    _PARA = 263,
-    _EN = 264,
-    _DDOT = 265,
-    _PASO = 266,
-    _BRANCH = 267,
-    _FIRST = 268,
-    _SECOND = 269,
-    _THIRD = 270,
-    _OTHERWISE = 271,
-    _ID = 272,
-    _INT_NUMBER = 273,
-    _UINT_NUMBER = 274,
-    _BOOL_VALUE = 275,
-    _LPAREN = 276,
-    _RPAREN = 277,
-    _LBRACKET = 278,
-    _RBRACKET = 279,
-    _LSQRBRACKET = 280,
-    _RSQRBRACKET = 281,
-    _ASSIGN = 282,
-    _SEMICOLON = 283,
-    _COMMA = 284,
-    _RARROW = 285,
-    _QMARK = 286,
-    _DOUBLEDOT = 287,
-    _NOT = 288,
-    _AROP = 289,
-    _RELOP = 290,
-    _INCOP = 291,
-    _BOOLOP = 292,
-    ONLY_IF = 293
+    _PARA = 262,
+    _EN = 263,
+    _DDOT = 264,
+    _PASO = 265,
+    _BRANCH = 266,
+    _FIRST = 267,
+    _SECOND = 268,
+    _THIRD = 269,
+    _OTHERWISE = 270,
+    _ID = 271,
+    _INT_NUMBER = 272,
+    _UINT_NUMBER = 273,
+    _BOOL_VALUE = 274,
+    _LPAREN = 275,
+    _RPAREN = 276,
+    _LBRACKET = 277,
+    _RBRACKET = 278,
+    _LSQRBRACKET = 279,
+    _RSQRBRACKET = 280,
+    _ASSIGN = 281,
+    _SEMICOLON = 282,
+    _COMMA = 283,
+    _RARROW = 284,
+    _QMARK = 285,
+    _DOUBLEDOT = 286,
+    _NOT = 287,
+    _AROP = 288,
+    _RELOP = 289,
+    _INCOP = 290,
+    _BOOLOP = 291,
+    ONLY_IF = 292
   };
 #endif
 
@@ -92,12 +91,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 49 "micko.y"
+#line 38 "semantic.y"
 
   int i;
   char *s;
 
-#line 101 "micko.tab.h"
+#line 100 "semantic.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -110,4 +109,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_MICKO_TAB_H_INCLUDED  */
+#endif /* !YY_YY_SEMANTIC_TAB_H_INCLUDED  */

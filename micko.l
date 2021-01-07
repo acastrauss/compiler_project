@@ -2,7 +2,7 @@
 
 %{
    #include <string.h>
-   #include "semantic.tab.h"
+   #include "micko.tab.h"
    #include "defs.h"
    extern YYSTYPE yylval;
 %}
@@ -14,6 +14,7 @@
 "if"                 { return _IF; }
 "else"               { return _ELSE; }
 "return"             { return _RETURN; }
+"global"             { return _GLOBAL; }
 
 "int"                { yylval.i = INT;  return _TYPE; }
 "unsigned"           { yylval.i = UINT; return _TYPE; }

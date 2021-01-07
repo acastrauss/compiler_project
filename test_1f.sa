@@ -1,0 +1,13 @@
+// OPIS: Fja sa vise promenljivih
+// REZULTAT: 6
+
+unsigned f(unsigned a, unsigned c, unsigned g) 
+{
+    unsigned b = 4u;
+    return a+b-c+g;
+}
+
+unsigned main() 
+{
+    return f(5u, 3u, 2u);
+}

@@ -34,7 +34,7 @@ typedef int64_t quad;
 typedef uint64_t uquad;
 
 //tipovi naredbi
-enum { NO_TYPE = 0, SIGNED_TYPE, UNSIGNED_TYPE };
+enum { NO_TYPE = 0, SIGNED_TYPE, UNSIGNED_TYPE, BOOL_TYPE };
 
 //vrste operanada
 enum { OP_REGISTER = 1, OP_INDIRECT, OP_INDEX, OP_CONSTANT, OP_ADDRESS, OP_DATA } OperandType;
@@ -42,7 +42,7 @@ enum { OP_REGISTER = 1, OP_INDIRECT, OP_INDEX, OP_CONSTANT, OP_ADDRESS, OP_DATA 
 //instrukcije
 enum { INS_CALL = 1, INS_RET, INS_PUSH, INS_POP, INS_CMP, INS_JMP, INS_JEQ, INS_JNE,
         INS_JGT, INS_JLT, INS_JGE, INS_JLE, INS_JC, INS_JNC, INS_JO, INS_JNO,
-        INS_ADD, INS_SUB, INS_MUL, INS_DIV, INS_MOV, INS_HALT };
+        INS_ADD, INS_SUB, INS_MUL, INS_DIV, INS_MOV, INS_HALT, INS_AND, INS_OR, INS_XOR, INS_NOT };
 
 #define FUNCTION_REGISTER        13
 #define FRAME_POINTER            14

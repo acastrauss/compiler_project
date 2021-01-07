@@ -258,6 +258,10 @@ void insert_code(uchar inst, uchar type, int line) {
     codemem[code_cnt].line = line;
     codemem[code_cnt].lineint = source_cnt;
     for (i=0; i<operand_cnt; i++) {
+        if (inst == INS_AND) 
+        {
+            printf("%d\n", operand[i].kind);
+        }
         codemem[code_cnt].op[i].kind = operand[i].kind;
         codemem[code_cnt].op[i].reg = operand[i].reg;
         codemem[code_cnt].op[i].data = operand[i].data;
@@ -551,6 +555,61 @@ void run_once() {
         case INS_HALT:
             processor.halt = TRUE;
             break;
+        case INS_AND:
+            operand0 = get_operand(i->op[0]);
+            operand1 = get_operand(i->op[1]);
+            set_operand(i->op[2], operand0 & operand1);
+            if (i->type == SIGNED_TYPE) {
+                //set_operand(i->op[2], operand0 + operand1);
+                set_flags_signed((quad)operand0 & (quad)operand1);
+            } else {
+                //set_operand(i->op[2], (word)((uword)operand0 + (uword)operand1));
+                set_flags_unsigned((uquad)(uword)operand0 & (uquad)(uword)operand1);
+            }
+            processor.pc++;
+            break;
+
+        case INS_OR:
+            operand0 = get_operand(i->op[0]);
+            operand1 = get_operand(i->op[1]);
+            set_operand(i->op[2], operand0 | operand1);
+            if (i->type == SIGNED_TYPE) {
+                //set_operand(i->op[2], operand0 + operand1);
+                set_flags_signed((quad)operand0 | (quad)operand1);
+            } else {
+                //set_operand(i->op[2], (word)((uword)operand0 + (uword)operand1));
+                set_flags_unsigned((uquad)(uword)operand0 | (uquad)(uword)operand1);
+            }
+            processor.pc++;
+            break;
+
+        case INS_XOR:
+            operand0 = get_operand(i->op[0]);
+            operand1 = get_operand(i->op[1]);
+            set_operand(i->op[2], operand0 ^ operand1);
+            if (i->type == SIGNED_TYPE) {
+                //set_operand(i->op[2], operand0 + operand1);
+                set_flags_signed((quad)operand0 ^ (quad)operand1);
+            } else {
+                //set_operand(i->op[2], (word)((uword)operand0 + (uword)operand1));
+                set_flags_unsigned((uquad)(uword)operand0 ^ (uquad)(uword)operand1);
+            }
+            processor.pc++;
+            break;
+
+        case INS_NOT:
+            operand0 = get_operand(i->op[0]);
+            set_operand(i->op[1], ~operand0 );
+            if (i->type == SIGNED_TYPE) {
+                //set_operand(i->op[2], operand0 + operand1);
+                set_flags_signed(~ (quad)operand0);
+            } else {
+                //set_operand(i->op[2], (word)((uword)operand0 + (uword)operand1));
+                set_flags_unsigned(~(uquad)(uword)operand0);
+            }
+            processor.pc++;
+            break;
+        
         default: {
             simerror("run_once fatal error"); // ne bi trebalo da se desi
         }

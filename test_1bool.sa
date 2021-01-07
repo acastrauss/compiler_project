@@ -1,8 +1,12 @@
 //OPIS: Dodela promenljivoj
-// RETURN: 6
+// RETURN: -1
+// razlog zbog kog je return -1 je taj sto je u C-u (a i u Sara jeziku) bool velicine jednog bajta
+// pa je false == 00000000 a not(false) == 11111111 sto je -1
+// ovo se moze ispraviti po potrebi tako sto ce se 'hardkodovati' da ukoliko je a = false, tj 00000000, da bude not(a) = 00000001 
+
 bool main() {
     
     bool a,b = false;
-    a = b and true;
+    a = not (b);
     return a;
 }

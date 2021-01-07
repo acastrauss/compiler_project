@@ -73,6 +73,11 @@ DIVU    { yylval.i = UNSIGNED_TYPE; return _DIV; }
 MOV     { return _MOV; }
 HALT    { return _HALT; }
 
+AND     { yylval.i = BOOL_TYPE; return _AND; }
+OR      { yylval.i = BOOL_TYPE; return _OR; }
+XOR     { yylval.i = BOOL_TYPE; return _XOR; }
+NOT     { yylval.i = BOOL_TYPE; return _NOT; }
+
 "%"{digit}{1,2}  { yylval.i = atoi(yytext+1); return _REGISTER; }
 "$"[+-]?{digit}+  { yylval.i = atol(yytext+1); return _CONSTANT; }
 [+-]?{digit}+ { yylval.i = atol(yytext); return _NUMBER; }
