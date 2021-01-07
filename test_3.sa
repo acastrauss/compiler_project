@@ -1,4 +1,5 @@
 //OPIS: para iskaz
+// RETURN: 4
 int main() {
     
     int zbir = 0;
@@ -13,5 +14,24 @@ int main() {
     para i en (3..5)
         razlika = zbir - i;
 
-    return 0;
+    return razlika;
 }
+/*
+ASM za para iskaz
+
+para0:
+    MOV lit1,i # gen_sym_name(i)
+
+    MOV $1, take_reg # ako nije zadat lit3
+    MOV lit3, take_reg # ako jeste
+
+para_body0:
+    CMP i, lit2
+    JGT para_exit0
+
+    statement_list
+
+    ADD reg_lit3, i, i
+    JMP para_body0
+para_exit0:
+*/

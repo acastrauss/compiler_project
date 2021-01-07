@@ -258,10 +258,7 @@ void insert_code(uchar inst, uchar type, int line) {
     codemem[code_cnt].line = line;
     codemem[code_cnt].lineint = source_cnt;
     for (i=0; i<operand_cnt; i++) {
-        if (inst == INS_AND) 
-        {
-            printf("%d\n", operand[i].kind);
-        }
+        
         codemem[code_cnt].op[i].kind = operand[i].kind;
         codemem[code_cnt].op[i].reg = operand[i].reg;
         codemem[code_cnt].op[i].data = operand[i].data;

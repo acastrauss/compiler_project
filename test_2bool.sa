@@ -1,0 +1,10 @@
+// OPIS: bool operacije
+// RETURN: 1
+
+bool main() 
+{
+    bool a = true;
+    bool b = false;
+    bool c = a and b ^ true;
+    return c;
+}

@@ -44,6 +44,8 @@
 
   ATR2* atr2_fcall = NULL; // za pozive fja
   ATR2* atr2_res = NULL; // ukoliko ima ugnjezdenih
+
+  int para_label = -1;
 %}
 
 %union {
@@ -350,35 +352,39 @@ branch_statement
 
 
 para_statement
-  : _PARA _ID 
-    {
-      int idx = lookup_symbol($2, VAR|PAR|GLB);
-      if(idx == NO_INDEX)
-        err("undefined '%s' in para statement", $2);
-      
-      indx_para = idx;
-    }
+  : _PARA
+  {
+    code("\npara_%d:", ++para_label);
+  }
+  _ID 
+  {
+    int idx = lookup_symbol($3, VAR|PAR|GLB);
+    if(idx == NO_INDEX)
+      err("undefined '%s' in para statement", $3);
+    
+    indx_para = idx;
+  }
   _EN _LPAREN literal _DDOT literal paso_part 
   {
     int idx_type = get_type(indx_para);
-    int lit1_type = get_type($6);
-    int lit2_type = get_type($8);
+    int lit1_type = get_type($7);
+    int lit2_type = get_type($9);
 
-    int lit1 = atoi(get_name($6));
-    int lit2 = atoi(get_name($8));
+    int lit1 = atoi(get_name($7));
+    int lit2 = atoi(get_name($9));
     
     int lit3;
     int lit3_type;
     
-    if ($9 == -1) 
+    if ($10 == -1) 
     {
       lit3_type = idx_type; // ako nije naveden paso izraz, racunace kao da je istog tipa kao idx
       lit3 = 1; // pozitivan broj da bi prosao uslov kasnije  
     }
     else 
     {
-      lit3_type = get_type($9);
-      lit3 = atoi(get_name($9)); 
+      lit3_type = get_type($10);
+      lit3 = atoi(get_name($10)); 
     }
 
     // tipovi iteratora i parametara
@@ -397,17 +403,58 @@ para_statement
       ! (lit1 < lit2 && lit3 > 0 ) 
     )
     err("invalid values for iterator constants.\n");
+
+    // gen koda
+
+    gen_mov($7, indx_para);
+    int inc_indx = take_reg();
+    
+    $<i>$ = inc_indx; // da bi moglo da se koristi
+
+    if ($10 == -1)
+    {
+      code("\n\t\tMOV $1,");
+      gen_sym_name(inc_indx);
+    }
+    else 
+    {
+      gen_mov($10, inc_indx);
+    }
+
+    code("\npara_body%d:", para_label);
+    gen_cmp(indx_para, $9);
+    
+    char sufix = get_type(indx_para) == INT ? 'S' : 'U';
+    code("\n\t\tJGT%c para_exit%d", sufix, para_label);
+
   }
-  _RPAREN statement
+  _RPAREN statement 
+  {
+    char sufix = get_type(indx_para) == INT ? 'S' : 'U';
+    
+    code("\n\t\tADD%c ", sufix);
+    gen_sym_name($<i>11);
+    code(",");
+    gen_sym_name(indx_para);
+    code(",");
+    gen_sym_name(indx_para);
+
+    code("\n\t\tJMP para_body%d", para_label);
+    code("\npara_exit%d:", para_label);
+
+    free_if_reg($<i>11);
+  }
   ;
 
 paso_part
-  : { $$ = -1; // ako nije naveden paso
-    }
+  : 
+  { 
+    $$ = -1; // ako nije naveden paso
+  }
   | _PASO literal
-    { //printf("lit3:%d\n", $2); 
-      $$ = $2;
-    }
+  { 
+    $$ = $2;
+  }
   ;
 
 exp_statement
@@ -445,8 +492,6 @@ num_exp
         if(get_type($1) != get_type($3))
           {
             err("invalid operands: arithmetic operation");
-            //printf("1:%d\n", $1);
-            //printf("3:%d\n", $3);
           }
         int t1 = get_type($1);    
         code("\n\t\t%s\t", ar_instructions[$2 + (t1 - 1) * AROP_NUMBER]);
@@ -468,15 +513,15 @@ basic_bool
       $$ = insert_literal($1, BOOL); 
       rel_used = -1;  
     }
-  | rel_exp 
+  | rel_exp
   {
     $$ = $1;
-  }
-  | exp _BOOLOP basic_bool
+  } 
+  | exp _BOOLOP exp
     {
       rel_used = -1;
       // any expresion != 0 is true
-      //printf("\ninstr:%s\n", bool_instructions[$2]);
+      
       code("\n\t\t%s\t\t", bool_instructions[$2]);
       gen_sym_name($1);
       code(",");
