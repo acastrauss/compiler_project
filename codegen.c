@@ -46,7 +46,7 @@ void gen_sym_name(int index) {
       if(get_kind(index) == PAR) // m*4(%14) 
       {
         int size = (get_type(index) == BOOL) ? 1 : 4; 
-        code("%d(%%14)", 4 + get_atr1(index) *size);
+        code("%d(%%14)", 4 + get_atr1(index) * 4);
       }
       else
         if(get_kind(index) == LIT) 

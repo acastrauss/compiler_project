@@ -52,6 +52,7 @@ int mainarg = 0;
 }
 
 %token _WORD
+%token _BYTE
 
 %token _PUSH
 %token _POP
@@ -120,6 +121,16 @@ variable
             int i,len = $4*4;
             for (i=0; i<len; i++) data[i] = 0;
             insert_source("%s:\t\t\tWORD %ld",$1,$4);
+            insert_data(data,len, $1, $<i>2);
+        }
+    |   _LABEL_DEF
+        { $<i>$ = yylineno; }
+        _BYTE _NUMBER
+        {
+            uchar data[256];
+            int i,len = $4*4;
+            for (i=0; i<len; i++) data[i] = 0;
+            insert_source("%s:\t\t\tBYTE %ld",$1,$4);
             insert_data(data,len, $1, $<i>2);
         }
     ;

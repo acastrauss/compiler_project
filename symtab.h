@@ -16,7 +16,7 @@ void free_glb_ids(GLB_IDS* glb_idsp);
 typedef struct atr2_str
 {
    unsigned occupied; // broj zauzetih clanova niza 
-   unsigned atr2[MAX_ATR2]; // MAX_ATR2 == 63, ako se napravi samo main i ima 63 parametra i samo se njima rukuje 
+   unsigned atr2[MAX_ATR2]; // MAX_ATR2 == 63, ako se napravi samo main i ima 63 parametra i samo se njima rukuje, niz tipova 
 } ATR2;
 
 // Element tabele simbola

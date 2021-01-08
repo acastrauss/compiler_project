@@ -37,6 +37,7 @@ alpha  {letter}|{digit}
 "#".*    { /* skip */ }
 
 WORD    { return _WORD; }
+BYTE    { return _BYTE; }
 
 PUSH    { return _PUSH; }
 POP     { return _POP; }

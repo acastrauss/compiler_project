@@ -510,19 +510,26 @@ compound_statement
 
 assignment_statement
   : _ID _ASSIGN exp_statement
+  {
+    int idx = lookup_symbol($1, VAR|PAR|GLB);
+
+    if(idx == NO_INDEX)
+      err("invalid lvalue '%s' in assignment", $1);
+    else
+    {
+      if(get_type(idx) != get_type($3))
       {
-        int idx = lookup_symbol($1, VAR|PAR|GLB);
-        if(idx == NO_INDEX)
-          err("invalid lvalue '%s' in assignment", $1);
-        else
-        {
-          if(get_type(idx) != get_type($3))
-          {
-                err("incompatible types in assignment");
-          } 
-        }
-        gen_mov($3, idx);
-      }
+            err("incompatible types in assignment");
+      } 
+    }
+
+    code("\n\t\tMOV \t");
+    gen_sym_name($3);
+    code(",");
+    gen_sym_name(idx);
+    
+    //gen_mov($3, idx);
+  }
   ;
 
 num_exp
@@ -578,8 +585,11 @@ basic_bool
   { 
     code("\n\t\tNOT \t");
     gen_sym_name($3);
-    
-    $$ = $3;
+    code(",");
+    $$ = take_reg();
+    set_type($$, get_type($3));
+    gen_sym_name($$);
+
     rel_used = -1;
   }
   | _NOT _LPAREN exp _RPAREN 
@@ -587,7 +597,7 @@ basic_bool
     $$ = $3;
     rel_used = -1;
 
-    code("\n\t\tNOT\t\t");
+    code("\n\t\tNOT\t");
     gen_sym_name($3);
     code(",");
     free_if_reg($3);
@@ -785,12 +795,11 @@ literal
 
 function_call
   : _ID 
-      {
-        fcall_idx = lookup_symbol($1, FUN);
-        if(fcall_idx == NO_INDEX)
-          err("'%s' is not a function", $1);
-
-      }
+    {
+      fcall_idx = lookup_symbol($1, FUN);
+      if(fcall_idx == NO_INDEX)
+        err("'%s' is not a function", $1);
+    }
     _LPAREN 
     {
       atr2_res = atr2_fcall; // ukoliko ima ugnjezdenih
@@ -807,13 +816,27 @@ function_call
         int indx = atr2_fcall->atr2[i];
 
         free_if_reg(indx);
-        code("\n\t\t\tPUSH\t");
+        code("\n\t\tPUSH\t");
         gen_sym_name(indx);
       }
 
-      code("\n\t\t\tCALL\t%s", get_name(fcall_idx));
+      code("\n\t\tCALL\t%s", get_name(fcall_idx));
+      
+      int args_size = 0;
+
+      /*
+      ovde mozda treba ako se za bool uzima 1 byte
       if($5 > 0)
-        code("\n\t\t\tADDS\t%%15,$%d,%%15", $5 * 4);
+      {
+        for(int i = 0; i < $5; i++) 
+        {
+          int size_arg = get_type(atr2_fcall->atr2[i]) == BOOL ? 1 : 4;
+          args_size += size_arg;
+        }
+      }
+      */
+
+      code("\n\t\tADDS\t%%15,$%d,%%15", $5 * 4);
       
       set_type(FUN_REG, get_type(fcall_idx));
       $$ = FUN_REG;
