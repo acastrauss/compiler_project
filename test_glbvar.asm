@@ -12,9 +12,9 @@ main:
 		SUBS	%0,$5,%0
 		MOV 	%0,-4(%14)
 		ADDS	$1,-4(%14),-4(%14)
-		MOV	-4(%14),%0
-		SUBS	$3,%0,%0
-		MOV 	%0,-8(%14)
+		MOV	-4(%14),%1
+		SUBS	$3,%1,%1
+		MOV 	%1,-8(%14)
 		MOV 	$0,%13
 		JMP 	@main_exit
 @main_exit:

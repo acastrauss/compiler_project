@@ -83,18 +83,18 @@ main:
 		PUSH	%14
 		MOV 	%15,%14
 @main_body:
-			PUSH	$-44
-			PUSH	$77
-			PUSH	$1
-			PUSH	$-5
-			PUSH	$0
-			PUSH	$6
-			PUSH	$5
-			PUSH	$1
-			PUSH	$6
-			PUSH	$5
-			CALL	f1
-			ADDS	%15,$40,%15
+		PUSH	$-44
+		PUSH	$77
+		PUSH	$1
+		PUSH	$-5
+		PUSH	$0
+		PUSH	$6
+		PUSH	$5
+		PUSH	$1
+		PUSH	$6
+		PUSH	$5
+		CALL	f1
+		ADDS	%15,$40,%15
 		MOV 	%13,%0
 		MOV 	$0,%13
 		JMP 	@main_exit

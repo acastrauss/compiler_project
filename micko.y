@@ -266,26 +266,27 @@ variable
     {
       err("incompatible types in assignment.");
     }
-    
-    int nod = var_num - var_num_before_id_list; // broj definisanih
-
-    int size = ($1 == BOOL) ? 1 : 4; // jer je ili bool pa 1 byte ili int/uint pa 4 byte-a
-
-    if (nod) 
+    else 
     {
-      code("\n\t\tSUBS\t%%15,$%d,%%15", size*nod); // za broj definisanih 
-    }
+      int nod = var_num - var_num_before_id_list; // broj definisanih
 
-    if ($4 != -1)
-    { // ako su definisane promenljive
-      for (int i = 1; i < nod + 1; i++) 
+      int size = ($1 == BOOL) ? 1 : 4; // jer je ili bool pa 1 byte ili int/uint pa 4 byte-a
+
+      if (nod) 
       {
-        code("\n\t\tMOV ");
-        gen_sym_name($4);
-        code(",-%d(%%14)", (var_num_before_id_list + i) * size);
+        code("\n\t\tSUBS\t%%15,$%d,%%15", size*nod); // za broj definisanih 
+      }
+
+      if ($4 != -1)
+      { // ako su definisane promenljive
+        for (int i = 1; i < nod + 1; i++) 
+        {
+          code("\n\t\tMOV ");
+          gen_sym_name($4);
+          code(",-%d(%%14)", (var_num_before_id_list + i) * size);
+        }
       }
     }
-  
   }
   ;
 
@@ -536,51 +537,58 @@ num_exp
   : exp
     { $$ = $1 ;}
   | num_exp _AROP exp
-      {
-        if(get_type($1) != get_type($3))
-          {
-            err("invalid operands: arithmetic operation");
-          }
-        int t1 = get_type($1);    
-        code("\n\t\t%s\t", ar_instructions[$2 + (t1 - 1) * AROP_NUMBER]);
-        gen_sym_name($1);
-        code(",");
-        gen_sym_name($3);
-        code(",");
-        free_if_reg($3);
-        free_if_reg($1);
-        $$ = take_reg();
-        gen_sym_name($$);
-        set_type($$, t1);
-      }
+  {
+    int t1 = NO_TYPE;
+
+    if(get_type($1) != get_type($3))
+    {
+      err("invalid operands: arithmetic operation");
+    }
+    else 
+    {
+      t1 = get_type($1);    
+    
+      code("\n\t\t%s\t", ar_instructions[$2 + (t1 - 1) * AROP_NUMBER]);
+      gen_sym_name($1);
+      code(",");
+      gen_sym_name($3);
+      code(",");
+      
+      free_if_reg($3);
+      free_if_reg($1);
+      $$ = take_reg();
+      gen_sym_name($$);
+      set_type($$, t1);
+    }
+  }
   ;
 
 basic_bool
   : _BOOL_VALUE
-    { 
-      $$ = insert_literal($1, BOOL); 
-      rel_used = -1;  
-    }
+  { 
+    $$ = insert_literal($1, BOOL); 
+    rel_used = -1;  
+  }
   | rel_exp
   {
     $$ = $1;
   } 
   | exp _BOOLOP exp
-    {
-      rel_used = -1;
-      // any expresion != 0 is true
-      
-      code("\n\t\t%s\t\t", bool_instructions[$2]);
-      gen_sym_name($1);
-      code(",");
-      gen_sym_name($3);
-      code(",");
-      free_if_reg($1);
-      free_if_reg($3);
-      $$ = take_reg();
-      gen_sym_name($$);
-      set_type($$, get_type($3));
-    }
+  {
+    rel_used = -1;
+    // any expresion != 0 is true
+    
+    code("\n\t\t%s\t\t", bool_instructions[$2]);
+    gen_sym_name($1);
+    code(",");
+    gen_sym_name($3);
+    code(",");
+    free_if_reg($1);
+    free_if_reg($3);
+    $$ = take_reg();
+    gen_sym_name($$);
+    set_type($$, get_type($3));
+  }
   | _NOT _LPAREN basic_bool _RPAREN 
   { 
     code("\n\t\tNOT \t");
@@ -636,11 +644,16 @@ bool_exp
 inc_exp
   : _ID _INCOP 
     {
+      int type = NO_TYPE;
+
       $$ = lookup_symbol($1, VAR|PAR|GLB);
+      
       if($$ == NO_INDEX)
         err("no variable named :'%s'", $1); 
-
-      int type = get_type($$);
+      else 
+      {
+        type = get_type($$);
+      } 
 
       if(type == BOOL || type == VOID) 
       {
@@ -657,7 +670,7 @@ inc_exp
       gen_sym_name($$);
 
       set_type($$, type);
-      
+
       char sufix = (type == INT) ? 'S' : 'U'; 
 
       code("\n\t\tADD%c\t$1", sufix);
@@ -669,11 +682,15 @@ inc_exp
     }
   | _INCOP _ID 
     {
+      int type = NO_TYPE;
+
       $$ = lookup_symbol($2, VAR|PAR|GLB);
       if($$ == NO_INDEX)
         err("no variable named :'%s'", $2);
-    
-            int type = get_type($$);
+      else 
+      {
+        type = get_type($$);
+      }
 
       if(type == BOOL || type == VOID) 
       {
@@ -706,11 +723,11 @@ exp
     { $$ = $1; }
   | inc_exp
   | _ID
-      {
-        $$ = lookup_symbol($1, VAR|PAR|GLB);
-        if($$ == NO_INDEX)
-          err("'%s' undeclared", $1);
-      }
+  {
+    $$ = lookup_symbol($1, VAR|PAR|GLB);
+    if($$ == NO_INDEX)
+      err("'%s' undeclared", $1);
+  }
   | function_call
   {
       $$ = take_reg();
@@ -795,56 +812,56 @@ literal
 
 function_call
   : _ID 
+  {
+    fcall_idx = lookup_symbol($1, FUN);
+    if(fcall_idx == NO_INDEX)
+      err("'%s' is not a function", $1);
+  }
+  _LPAREN 
+  {
+    atr2_res = atr2_fcall; // ukoliko ima ugnjezdenih
+  } 
+  real_arg_list _RPAREN
+  {
+    if(get_atr1(fcall_idx) != curr_arg)
+      err("wrong number of args to function '%s'", 
+          get_name(fcall_idx));
+
+    // pushovanje argumenata suprotnim redosledom
+    for( int i = curr_arg - 1; i >= 0; i--) 
     {
-      fcall_idx = lookup_symbol($1, FUN);
-      if(fcall_idx == NO_INDEX)
-        err("'%s' is not a function", $1);
+      int indx = atr2_fcall->atr2[i];
+
+      free_if_reg(indx);
+      code("\n\t\tPUSH\t");
+      gen_sym_name(indx);
     }
-    _LPAREN 
-    {
-      atr2_res = atr2_fcall; // ukoliko ima ugnjezdenih
-    } 
-    real_arg_list _RPAREN
-    {
-      if(get_atr1(fcall_idx) != curr_arg)
-        err("wrong number of args to function '%s'", 
-            get_name(fcall_idx));
 
-      // pushovanje argumenata suprotnim redosledom
-      for( int i = curr_arg - 1; i >= 0; i--) 
-      {
-        int indx = atr2_fcall->atr2[i];
-
-        free_if_reg(indx);
-        code("\n\t\tPUSH\t");
-        gen_sym_name(indx);
-      }
-
-      code("\n\t\tCALL\t%s", get_name(fcall_idx));
-      
-      int args_size = 0;
-
-      /*
-      ovde mozda treba ako se za bool uzima 1 byte
-      if($5 > 0)
-      {
-        for(int i = 0; i < $5; i++) 
-        {
-          int size_arg = get_type(atr2_fcall->atr2[i]) == BOOL ? 1 : 4;
-          args_size += size_arg;
-        }
-      }
-      */
-
-      code("\n\t\tADDS\t%%15,$%d,%%15", $5 * 4);
-      
-      set_type(FUN_REG, get_type(fcall_idx));
-      $$ = FUN_REG;
+    code("\n\t\tCALL\t%s", get_name(fcall_idx));
     
-      curr_arg = 0;
+    int args_size = 0;
 
-      atr2_fcall = atr2_res; // vracanje na staru vrednost
+    /*
+    ovde mozda treba ako se za bool uzima 1 byte
+    if($5 > 0)
+    {
+      for(int i = 0; i < $5; i++) 
+      {
+        int size_arg = get_type(atr2_fcall->atr2[i]) == BOOL ? 1 : 4;
+        args_size += size_arg;
+      }
     }
+    */
+
+    code("\n\t\tADDS\t%%15,$%d,%%15", $5 * 4);
+    
+    set_type(FUN_REG, get_type(fcall_idx));
+    $$ = FUN_REG;
+  
+    curr_arg = 0;
+
+    atr2_fcall = atr2_res; // vracanje na staru vrednost
+  }
   ;
 
 real_arg_list
@@ -886,72 +903,72 @@ if_statement
 
 if_part
   : _IF _LPAREN
-   {
-      $<i>$ = ++lab_num;
-      code("\n@if%d:", lab_num);
-    }
-   bool_exp
+  {
+    $<i>$ = ++lab_num;
+    code("\n@if%d:", lab_num);
+  }
+  bool_exp
+  {
+    if (rel_used != -1) 
     {
-      if (rel_used != -1) 
-      {
-        // mora da se vidi koji je jump
-        code("\n\t\t%s\t@false%d", opp_jumps[$4], $<i>3);
-      }
-      else 
-      {
-        // samo moze jeq
-        code("\n\t\tJEQ \t@false%d", $<i>3); // jer ako je 0 onda nije tacna bool operacija iz zagrade
-      }
-      
-      code("\n@true%d:", $<i>3);
-      
+      // mora da se vidi koji je jump
+      code("\n\t\t%s\t@false%d", opp_jumps[$4], $<i>3);
     }
+    else 
+    {
+      // samo moze jeq
+      code("\n\t\tJEQ \t@false%d", $<i>3); // jer ako je 0 onda nije tacna bool operacija iz zagrade
+    }
+    
+    code("\n@true%d:", $<i>3);
+    
+  }
   _RPAREN statement
-    {
-        code("\n\t\tJMP \t@exit%d", $<i>3);
-        code("\n@false%d:", $<i>3);
-        $$ = $<i>3;
-    }
+  {
+      code("\n\t\tJMP \t@exit%d", $<i>3);
+      code("\n@false%d:", $<i>3);
+      $$ = $<i>3;
+  }
   ;
 
 rel_exp
   : num_exp _RELOP num_exp
-      {
-        if(get_type($1) != get_type($3))
-          err("invalid operands: relational operator");
+  {
+    if(get_type($1) != get_type($3))
+      err("invalid operands: relational operator");
 
-        $$ = $2 + ((get_type($1) - 1) * RELOP_NUMBER);
-        gen_cmp($1, $3);
+    $$ = $2 + ((get_type($1) - 1) * RELOP_NUMBER);
+    gen_cmp($1, $3);
 
-        rel_used = $$; // koji rel se koristi
-      }
+    rel_used = $$; // koji rel se koristi
+  }
   ;
 
 return_statement
   : _RETURN num_exp _SEMICOLON
-      {
+  {
 
-        if(get_type(fun_idx) != get_type($2))
-          err("incompatible types in return");
+    if(get_type(fun_idx) != get_type($2))
+      err("incompatible types in return");
 
-        gen_mov($2, FUN_REG);
-        code("\n\t\tJMP \t@%s_exit", get_name(fun_idx));
-      }
+    gen_mov($2, FUN_REG);
+    code("\n\t\tJMP \t@%s_exit", get_name(fun_idx));
+  }
   | _RETURN bool_exp _SEMICOLON
-    {
-      if(get_type(fun_idx) != get_type($2))
-        err("incompatible types in return");
+  {
+    if(get_type(fun_idx) != get_type($2))
+      err("incompatible types in return");
 
-        gen_mov($2, FUN_REG);
-        code("\n\t\tJMP \t@%s_exit", get_name(fun_idx));
-    }
-  | _RETURN _SEMICOLON
-    {
-        if (get_type(fun_idx) != VOID)
-          warning("function should return non void value.");
-    
-        code("\n\t\tJMP \t@%s_exit", get_name(fun_idx));
-    }
+      gen_mov($2, FUN_REG);
+      code("\n\t\tJMP \t@%s_exit", get_name(fun_idx));
+  }
+| _RETURN _SEMICOLON
+  {
+      if (get_type(fun_idx) != VOID)
+        warning("function should return non void value.");
+  
+      code("\n\t\tJMP \t@%s_exit", get_name(fun_idx));
+  }
   ;
 
 %%

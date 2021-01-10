@@ -6,7 +6,7 @@ main:
 		MOV $0,-1(%14)
 		MOV $0,-2(%14)
 @main_body:
-		NOT		-2(%14),%0
+		NOT	-2(%14),%0
 		MOV 	%0,-1(%14)
 		MOV 	-1(%14),%13
 		JMP 	@main_exit
